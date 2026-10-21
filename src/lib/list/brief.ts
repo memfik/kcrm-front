@@ -6,7 +6,7 @@ import type { ReactNode } from "react"
  */
 
 /** Поле карточки; `s` — его текст, если `v` не строка (статус, дата). */
-export type BriefItem = { t: string; v: ReactNode; s?: string; wide?: boolean }
+export type BriefItem = { t: string; v: ReactNode; s?: string; wide?: boolean; fresh?: boolean }
 
 const SKIP = /^ID|БИН|Название|Контрагент|Комментар|Адрес/i
 

@@ -100,7 +100,7 @@ export function Header() {
           <NotificationsPopover
             trigger={(unread) => (
               <GlassButton aria-label="Уведомления" className={round}>
-                <Bell className="size-[17px]" />
+                <Bell className="size-5" />
                 {unread > 0 && (
                   <span className="absolute top-1 right-1 h-[18px] min-w-[18px] rounded-full bg-[#ff3b30] px-[5px] text-center text-[10.5px] leading-[18px] font-bold text-white shadow-[0_0_0_2px_var(--background)]">
                     {unread}
@@ -115,7 +115,7 @@ export function Header() {
           <SettingsPopover
             trigger={
               <GlassButton aria-label="Настройки" className={cn(round, "max-sm:hidden")}>
-                <Settings className="size-[17px]" />
+                <Settings className="size-5" />
               </GlassButton>
             }
           />

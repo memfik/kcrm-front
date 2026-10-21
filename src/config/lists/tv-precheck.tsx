@@ -172,12 +172,6 @@ export const TV_PRECHECK: ListConfig<Precheck> = {
     { k: "node", t: "До узла сети (ЕСТУ)", num: true, value: (x) => x.node, render: (x) => `${fmt(x.node)} м` },
     { k: "tech", t: "Технология", value: (x) => x.tech, render: (x) => x.tech },
     {
-      k: "hist",
-      t: "История адреса",
-      value: (x) => HIST[x.hist],
-      render: (x) => (x.hist === 0 ? <Status text="ТВ была" color="#34c759" /> : x.hist === 1 ? "проверок не было" : <Status text="ТВ не было" color="#ff375f" />),
-    },
-    {
       k: "so",
       t: "Сети СО",
       noSort: true,
@@ -192,6 +186,12 @@ export const TV_PRECHECK: ListConfig<Precheck> = {
         ) : (
           "—"
         ),
+    },
+    {
+      k: "hist",
+      t: "История адреса",
+      value: (x) => HIST[x.hist],
+      render: (x) => (x.hist === 0 ? <Status text="ТВ была" color="#34c759" /> : x.hist === 1 ? "проверок не было" : <Status text="ТВ не было" color="#ff375f" />),
     },
   ],
   kpis: (_r, _rp, rows) => [

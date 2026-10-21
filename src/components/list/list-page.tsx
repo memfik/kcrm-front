@@ -86,6 +86,10 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
       exportCsv(cfg, target)
       toast(`Выгружено ${target.length} записей в Excel (CSV)`)
     }
+    if (a.onClick === "reset") {
+      setQ(emptyQuery(cfg))
+      toast("Показаны все записи — вкладка и фильтры сброшены")
+    }
     // TODO: импорт из Excel/CSV — разбор и проверка строк на сервере
     if (a.onClick === "import") toast("Импорт из файла — после подключения API")
     if (a.onClick === "bulk" && cfg.bulk) {

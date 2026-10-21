@@ -11,7 +11,6 @@ import { fmt, money, periodLabel, prevLabel, sumOf } from "@/lib/period"
 /*
  * 05 Коммерческие предложения. Строки — последние 600 КП из копии базы kCRM;
  * позиции — из прейскуранта копии базы. TODO: API.
- * TODO: правка КП — в Конструкторе КП (макет 28): «Редактировать» → /offer-builder?kp=<id>, а не форма (сумма и позиции считаются там).
  */
 
 export type Offer = {
@@ -42,7 +41,6 @@ const STATUS: Record<StatusKey, [string, string]> = {
 const status = (x: Offer) => <Status text={STATUS[statusOf(x)][0]} color={STATUS[statusOf(x)][1]} />
 const owner = (u: string) => <Owner name={managerName(u)} color={ownerColor(u)} />
 const managerOpts: Option[] = [...new Set(raw.offers.map((o) => o[2]))].slice(0, 30).map((v) => ({ v, label: managerName(v) }))
-const statusOpts: Option[] = (Object.keys(STATUS) as StatusKey[]).map((v) => ({ v, label: STATUS[v][0], color: STATUS[v][1] }))
 const approvedShare = Math.round((ALL.filter((x) => x.act).length / ALL.length) * 100)
 
 function record(x: Offer) {
@@ -83,7 +81,7 @@ function record(x: Offer) {
       </>
     ),
     actions: [
-      { icon: FileText, label: "Открыть конструктор", href: `/offer-builder?kp=${x.id}` },
+      { icon: FileText, label: "Редактировать в конструкторе", href: `/offer-builder?kp=${x.id}` },
       { icon: Printer, label: "Печать / PDF" },
       { icon: Percent, label: "Запрос скидки", href: `/discount-requests/new?kp=${x.id}` },
       { icon: Signature, label: "Сформировать договор", href: `/contract-builder?kp=${x.id}` },
@@ -204,15 +202,5 @@ export const OFFERS_LIST: ListConfig<Offer> = {
   cardStatus: "act",
   record,
   name: (x) => `КП № ${x.id}`,
-  // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
-  blank: () => ({ id: 0, cs: 0, u: managerOpts[0].v, deal: 0, date: "", act: 0, n: 1, s: 0 }),
-  fields: [
-    { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
-    { k: "deal", t: "№ сделки", type: "number", get: (x) => (x.deal ? String(x.deal) : ""), set: (x, v) => ({ ...x, deal: +v || 0 }) },
-    { k: "u", t: "Менеджер", type: "select", opts: managerOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
-    { k: "date", t: "Дата", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
-    { k: "n", t: "Позиций", type: "number", get: (x) => String(x.n), set: (x, v) => ({ ...x, n: +v || 0 }) },
-    { k: "s", t: "Сумма, ₸", type: "number", get: (x) => (x.s ? String(x.s) : ""), set: (x, v) => ({ ...x, s: +v || 0 }) },
-    { k: "act", t: "Согласование", type: "select", opts: statusOpts.filter((o) => o.v !== "off"), get: (x) => (x.act ? "ok" : "wait"), set: (x, v) => ({ ...x, act: v === "ok" ? 1 : 0 }) },
-  ],
+  // КП создаётся и правится в Конструкторе КП (28): общей формы у раздела нет — сумма и позиции считаются там
 }

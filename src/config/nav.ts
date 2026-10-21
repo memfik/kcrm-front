@@ -106,7 +106,7 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
     quick: [
       q("Заявка на ТВ и ТР", "Новый запрос", "/tech-requests/new", FilePlus),
-      q("Акт монтажа", "Отправка в СЭДО", "/install-acts/new", ClipboardCheck),
+      q("Акт монтажа", "Отправка в СЭДО", "/install-acts", ClipboardCheck),
     ],
     feature: { title: "Заявки в работе", text: "ТВ/ТР, наряды и IP — статусы и согласования по филиалам", pic: "bars" },
   },

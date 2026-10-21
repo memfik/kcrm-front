@@ -4,6 +4,13 @@ import { GlassSelect, GlassSelectContent, GlassSelectItem, GlassSelectTrigger, G
 import type { Option } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
 
+/**
+ * Стекло выпадающих списков форм (селект, календарь): плотнее стандартного frosted, чтобы текст под ним не мешал;
+ * в светлой теме --glass-highlight почти белый — подсветку пункта задаём синей.
+ */
+export const DROPDOWN_GLASS =
+  "z-[130] [--glass-tint-frosted:oklch(0.2_0.005_286/0.92)] not-dark:[--glass-tint-frosted:oklch(1_0_0/0.94)] not-dark:[--glass-highlight:rgba(8,94,255,0.1)]"
+
 /** Выбор из списка для форм и диалогов — Opaline GlassSelect по нашим опциям. */
 export function FormSelect({
   value,
@@ -32,8 +39,7 @@ export function FormSelect({
         <GlassSelectValue placeholder={placeholder} />
       </GlassSelectTrigger>
       {/* выше диалогов (z-111) — список открывается и внутри них */}
-      {/* светлая тема: --glass-highlight там почти белый — подсветка пункта не видна на белом стекле */}
-      <GlassSelectContent className="z-[130] not-dark:[--glass-highlight:rgba(8,94,255,0.1)]">
+      <GlassSelectContent className={DROPDOWN_GLASS}>
         {options.map((o) => (
           <GlassSelectItem key={o.v} value={o.v} className="text-sm">
             {o.color && <i className="size-2.5 flex-none rounded-full" style={{ background: o.color }} />}

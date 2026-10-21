@@ -2,6 +2,7 @@
 
 import { GlassDatePicker } from "@/components/ui/opaline/glass-date-picker"
 import { cn } from "@/lib/utils"
+import { DROPDOWN_GLASS } from "./select"
 
 const toDate = (s: string) => {
   const [y, m, d] = s.slice(0, 10).split("-").map(Number)
@@ -31,8 +32,8 @@ export function DateField({
       locale="ru-RU"
       format={{ day: "numeric", month: "long", year: "numeric" }}
       className={cn("h-11 w-full rounded-xl text-sm text-foreground", className)}
-      // выше диалогов (z-111) — календарь открывается и внутри них
-      calendarProps={{ weekStartsOn: 1, className: "z-[130] not-dark:[--glass-highlight:rgba(8,94,255,0.1)]" }}
+      // выше диалогов (z-111) и плотнее стандартного стекла — см. DROPDOWN_GLASS
+      calendarProps={{ weekStartsOn: 1, className: DROPDOWN_GLASS }}
     />
   )
 }

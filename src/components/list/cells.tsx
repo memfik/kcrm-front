@@ -198,7 +198,7 @@ export function Flow({ steps }: { steps: { code: string; text: React.ReactNode; 
 }
 
 /** Плашка-предупреждение в карточке: «Возвращена на доработку», «Расторгнута»… */
-export function Banner({ icon: Icon, title, tone = "warn", children }: { icon: LucideIcon; title: string; tone?: "warn" | "red" | "blue" | "green"; children?: React.ReactNode }) {
+export function Banner({ icon: Icon, title, tone = "warn", fresh, children }: { icon: LucideIcon; title: string; tone?: "warn" | "red" | "blue" | "green"; fresh?: boolean; children?: React.ReactNode }) {
   const tones = {
     warn: ["bg-[rgba(255,159,10,0.12)]", "text-[#ff9f0a]"],
     red: ["bg-[rgba(255,55,95,0.1)]", "text-[#ff375f]"],
@@ -209,7 +209,10 @@ export function Banner({ icon: Icon, title, tone = "warn", children }: { icon: L
     <div className={cn("mb-3 flex items-start gap-3 rounded-2xl px-4 py-3.5 text-[13.5px]", tones[0])}>
       <Icon className={cn("size-5 flex-none", tones[1])} />
       <div>
-        <b className="mb-0.5 block">{title}</b>
+        <b className="mb-0.5 block">
+          {title}
+          {fresh && <Fresh />}
+        </b>
         {children}
       </div>
     </div>

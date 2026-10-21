@@ -96,7 +96,7 @@ export type ListConfig<T extends Row> = {
   anchor?: string
   kpis: (r: string[], rp: string[]) => KpiDef[]
   /** Вид «Аналитика» рядом со «Списком». */
-  analytics?: { title: string; render: () => ReactNode }
+  analytics?: { title: string; render: (ctx: { r: string[]; p: Period }) => ReactNode }
   archive?: Archive<T>
   /** Колонка статуса для плашки на карточке (по умолчанию «st»). */
   cardStatus?: string

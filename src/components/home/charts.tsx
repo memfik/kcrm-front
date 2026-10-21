@@ -1,6 +1,7 @@
 "use client"
 
-import { memo, useEffect, useRef, useState } from "react"
+import { memo, useState } from "react"
+import { useWidth } from "@/hooks/use-width"
 import {
   CONTRACTS,
   LAST12,
@@ -14,27 +15,6 @@ import {
   yearAgo,
 } from "@/lib/home-stats"
 import { DeltaPill } from "@/components/shared/ui"
-
-/** Ширина элемента; обновляется не чаще раза в кадр. */
-function useWidth<T extends HTMLElement>(fallback: number) {
-  const ref = useRef<T>(null)
-  const [width, setWidth] = useState(fallback)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    let raf = 0
-    const ro = new ResizeObserver(([e]) => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => setWidth(Math.round(e.contentRect.width)))
-    })
-    ro.observe(el)
-    return () => {
-      cancelAnimationFrame(raf)
-      ro.disconnect()
-    }
-  }, [])
-  return [ref, width] as const
-}
 
 const BRAND = "#085eff"
 const GREEN = "#34c759"

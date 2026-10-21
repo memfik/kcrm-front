@@ -177,7 +177,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
 
         {cfg.analytics && tabView === "ana" && (
           <section className="rise mt-3 rounded-3xl border border-border bg-card px-6 py-5 shadow-[var(--panel-shadow)] max-sm:rounded-[20px] max-sm:px-4">
-            {cfg.analytics.render()}
+            {cfg.analytics.render({ r, p: period })}
           </section>
         )}
 

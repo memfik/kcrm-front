@@ -1,7 +1,7 @@
 import { Box, Briefcase, Calendar, Check, Download, FileCheck, FilePlus, FileText, Globe, MapPin, Phone, TrendingUp, Users } from "lucide-react"
 import { DateCell, Dash, Dot, Kv, Line, NameCell, Owner, Pill, Section, Status, Timeline, AVATAR_COLORS, Avatar } from "@/components/list/cells"
 import raw from "@/data/counterparties-demo.json"
-import { CITY, CONTACT_NAMES, FORM, STAFF, counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
+import { CITY, CONTACT_NAMES, FORM, STAFF, binOf, counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
 import { OFFERS } from "@/lib/home-stats"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { delta, fmt, inRange, periodLabel, prevLabel, signed, sumOf } from "@/lib/period"
@@ -43,7 +43,6 @@ const STA: Record<number, [string, string]> = {
   5: ["Приостановлен", "#ffcc00"],
   6: ["Отказ", "#ff375f"],
 }
-const binOf = (id: number) => String((rnd(id, 8) % 90) + 10) + String(rnd(id, 9)).padStart(10, "0").slice(0, 10)
 
 const ALL: Counterparty[] = raw.map(([id, uid, kp, last, ct, dl, s, cc]) => {
   const n = +id

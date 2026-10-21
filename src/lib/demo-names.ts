@@ -76,3 +76,6 @@ export function counterpartyName(id: number) {
   if (f === "ИП") return `ИП «${LAST[rnd(id, 5) % LAST.length][0]} ${LETTERS[rnd(id, 15) % 19]}.${LETTERS[rnd(id, 16) % 19]}.»`
   return `${f} «${NM1[rnd(id, 6) % NM1.length]} ${NM2[rnd(id, 7) % NM2.length]}»`
 }
+
+/** БИН/ИИН контрагента — 12 цифр. */
+export const binOf = (id: number) => String((rnd(id, 8) % 90) + 10) + String(rnd(id, 9)).padStart(10, "0").slice(0, 10)

@@ -20,13 +20,15 @@ export type Column<T> = {
   /** Дата «YYYY-MM-DD…» — диапазон в «Ещё», сортировка по убыванию. */
   date?: boolean
   noSort?: boolean
+  /** Метка «новое» в заголовке — колонка по требованиям ДИППП/ТБ. */
+  fresh?: boolean
 }
 
 export type Option = { v: string; label: string; color?: string }
 
 export type Filter<T> = { k: string; t: string; get: (x: T) => string; opts: Option[] }
 
-export type Tab<T> = { k: string; t: string; f: (x: T) => boolean }
+export type Tab<T> = { k: string; t: string; f: (x: T) => boolean; fresh?: boolean }
 
 export type KpiDef = {
   t: string

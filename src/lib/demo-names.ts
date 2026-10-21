@@ -1,3 +1,4 @@
+import clients from "@/data/counterparties-demo.json"
 import raw from "@/data/home-demo.json"
 
 /* Имена-заглушки для демо-данных: в копии базы — только ID. Детерминированы, чтобы совпадать между страницами. */
@@ -79,3 +80,6 @@ export function counterpartyName(id: number) {
 
 /** БИН/ИИН контрагента — 12 цифр. */
 export const binOf = (id: number) => String((rnd(id, 8) % 90) + 10) + String(rnd(id, 9)).padStart(10, "0").slice(0, 10)
+
+/** В копии базы почти все сделки и заявки висят на тестовом контрагенте 22291 — раскидываем по реальным. */
+export const fixClient = (cs: string, seed: string | number) => (cs === "22291" ? +clients[rnd(seed, 55) % clients.length][0] : +cs)

@@ -114,14 +114,17 @@ export function Section({ title, children }: { title: string; children: React.Re
   )
 }
 
-export type KvItem = { t: string; v: React.ReactNode; wide?: boolean }
+export type KvItem = { t: string; v: React.ReactNode; wide?: boolean; fresh?: boolean }
 
 export function Kv({ items }: { items: KvItem[] }) {
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-2.5 max-sm:grid-cols-1">
       {items.map((x) => (
         <div key={x.t} className={cn("min-w-0 rounded-[14px] bg-[var(--soft)] px-3.5 py-3", x.wide && "col-span-full")}>
-          <span className="mb-1 block text-xs text-muted-foreground">{x.t}</span>
+          <span className="mb-1 block text-xs text-muted-foreground">
+            {x.t}
+            {x.fresh && <Fresh />}
+          </span>
           <b className="block text-sm leading-[1.4] font-medium break-words">{x.v}</b>
         </div>
       ))}
@@ -174,7 +177,7 @@ export function Stage({ code, text, color, short }: { code: string; text: string
 }
 
 /** Путь по этапам: пройденные — зелёные, текущий — синий. */
-export function Flow({ steps }: { steps: { code: string; text: string; state: "done" | "on" | "todo" }[] }) {
+export function Flow({ steps }: { steps: { code: string; text: React.ReactNode; state: "done" | "on" | "todo" }[] }) {
   return (
     <div className="my-1.5 flex flex-wrap gap-2">
       {steps.map((s) => (
@@ -190,6 +193,57 @@ export function Flow({ steps }: { steps: { code: string; text: string; state: "d
           {s.text}
         </div>
       ))}
+    </div>
+  )
+}
+
+/** Плашка-предупреждение в карточке: «Возвращена на доработку», «Расторгнута»… */
+export function Banner({ icon: Icon, title, tone = "warn", children }: { icon: LucideIcon; title: string; tone?: "warn" | "red" | "blue" | "green"; children?: React.ReactNode }) {
+  const tones = {
+    warn: ["bg-[rgba(255,159,10,0.12)]", "text-[#ff9f0a]"],
+    red: ["bg-[rgba(255,55,95,0.1)]", "text-[#ff375f]"],
+    blue: ["bg-[rgba(8,94,255,0.1)]", "text-[#085eff]"],
+    green: ["bg-[rgba(52,199,89,0.12)]", "text-[#34c759]"],
+  }[tone]
+  return (
+    <div className={cn("mb-3 flex items-start gap-3 rounded-2xl px-4 py-3.5 text-[13.5px]", tones[0])}>
+      <Icon className={cn("size-5 flex-none", tones[1])} />
+      <div>
+        <b className="mb-0.5 block">{title}</b>
+        {children}
+      </div>
+    </div>
+  )
+}
+
+/** Небольшая таблица внутри блока карточки (позиции, затраты). */
+export function MiniTable({ head, rows }: { head: { t: string; right?: boolean }[]; rows: React.ReactNode[][] }) {
+  const th = "border-b border-border px-2.5 pb-2.5 text-left text-[11.5px] font-semibold tracking-[0.04em] text-[var(--faint)] uppercase first:pl-0 last:pr-0"
+  const td = "border-b border-border px-2.5 py-3 align-top first:pl-0 last:pr-0 group-last:border-0"
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse text-[13.5px]">
+        <thead>
+          <tr>
+            {head.map((h) => (
+              <th key={h.t} className={cn(th, h.right && "text-right")}>
+                {h.t}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, i) => (
+            <tr key={i} className="group">
+              {r.map((c, k) => (
+                <td key={k} className={cn(td, head[k]?.right && "text-right whitespace-nowrap tabular-nums")}>
+                  {c}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   )
 }

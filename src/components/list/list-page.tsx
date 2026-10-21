@@ -13,6 +13,7 @@ import type { Action, ListConfig, Row } from "@/lib/list/types"
 import { delta, fmt, prevLabel, range, type Period } from "@/lib/period"
 import { cn } from "@/lib/utils"
 import { editable, recordHref, removeLabel, RowMenu, useDeleteDialog } from "./actions"
+import { Fresh } from "./cells"
 import { ActiveChips, FilterChip, MoreButton, MoreFilters } from "./filters"
 import { Btn, roundAction } from "./ui"
 
@@ -63,6 +64,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   }
   const allOnPage = view.length > 0 && view.every((x) => checked.has(x.id))
   const action = (a: Action) => {
+    if (!a.onClick) return toast(`«${a.label}» — после подключения API`)
     if (a.onClick === "export") {
       const target = checked.size ? rows.filter((x) => checked.has(x.id)) : list
       exportCsv(cfg, target)
@@ -172,6 +174,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
                     )}
                   >
                     {t.t}
+                    {t.fresh && <Fresh />}
                     <span className={cn("rounded-full bg-[var(--soft)] px-[7px] py-px text-[11px] font-bold tabular-nums", on && "bg-background/20 text-inherit")}>
                       {fmt(tabCounts[t.k] ?? 0)}
                     </span>
@@ -240,6 +243,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
                           className={cn("group cursor-pointer", c.num && "text-right", i === 0 && "sl left-[84px] max-sm:static")}
                         >
                           {c.t}
+                          {c.fresh && <Fresh />}
                           {!c.noSort && (
                             <span className={cn("ml-1 opacity-0 transition-opacity group-hover:opacity-100", sorted && "text-[#085eff] opacity-100")}>
                               {sorted ? (q.sort[1] > 0 ? "↑" : "↓") : "↕"}

@@ -1,9 +1,8 @@
 import Link from "next/link"
 import { Briefcase, CircleCheck, CircleDollarSign, Clock, FileCheck, FilePlus, FileText, Plus, Signature, Upload, Wrench } from "lucide-react"
 import { DateCell, Dash, Flow, Kv, Line, NameCell, Owner, Section, Stage, Status, Timeline } from "@/components/list/cells"
-import clients from "@/data/counterparties-demo.json"
 import raw from "@/data/deals-demo.json"
-import { CONTACT_NAMES, counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
+import { CONTACT_NAMES, counterpartyName, fixClient, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { delta, fmt, inRange, money, periodLabel, prevLabel, signed } from "@/lib/period"
 
@@ -40,8 +39,6 @@ const stageOf = (id: string) => STG[id] ?? STG["0"]
 const SERV = ["Интернет 100 Мбит/с", "IP-телефония", "Аренда канала L2", "VPN между филиалами", "SIP-транк 30 линий", "Хостинг", "Интернет 50 Мбит/с", "Видеонаблюдение"]
 const REASONS: Option[] = raw.cancel.map(([v, label]) => ({ v, label }))
 
-// В копии базы почти все сделки висят на тестовом контрагенте 22291 — раскидываем по реальным.
-const fixClient = (cs: string, seed: string) => (cs === "22291" ? +clients[rnd(seed, 55) % clients.length][0] : +cs)
 
 const ALL: Deal[] = raw.deals.map((d) => {
   const [id, pid, date, cs, u, name, exp, fore, fact, fin, succ, canc, stg, acts] = d

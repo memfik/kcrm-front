@@ -3,7 +3,7 @@ import { Banner, DateCell, Dash, Kv, Line, NameCell, Pill, Section, Status, Time
 import { MapBlock } from "@/components/list/map-block"
 import requests from "@/data/tech-requests-demo.json"
 import { CITY, counterpartyName, fixClient, managerName, pick, rnd, STAFF } from "@/lib/demo-names"
-import { DEPARTMENTS, STREETS } from "@/lib/dippp"
+import { DEPARTMENTS, OPERATORS, shiftDate as shift, STREETS, TECH, TODAY, TV_SERVICES as SERV } from "@/lib/dippp"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange } from "@/lib/period"
 
@@ -34,20 +34,9 @@ export type Address = {
   node: number
 }
 
-export const OPERATORS = ["Казахтелеком", "Транстелеком", "Beeline Business", "Kcell", "Алма ТВ", "2Day Telecom", "Jusan Mobile"]
-export const TECH = ["ВОЛС · FTTB", "ВОЛС · GPON", "РРЛ", "Радиомост", "Спутник VSAT", "Медь xDSL"]
-const SERV = ["Интернет", "VPN L2", "VPN L3", "Аренда канала", "IP-телефония", "Видеонаблюдение", "kCloud"]
 const SOURCES = ["2ГИС", "Яндекс", "Google"]
 const REMARKS = ["Узел в здании, ВОЛС до этажа", "Нет кабельной канализации", "Только РРЛ, прямая видимость есть", "Строительство 120 м ВОЛС", "Ёмкость муфты исчерпана"]
 const RES: Record<Res, [string, string]> = { yes: ["ТВ есть", "#34c759"], no: ["ТВ нет", "#ff375f"], part: ["Частично", "#ff9f0a"] }
-const TODAY = "2018-03-30"
-
-/** Дата «YYYY-MM-DD» со сдвигом в днях (UTC — без сдвига часового пояса). */
-const shift = (base: string, days: number) => {
-  const d = new Date(`${base}T00:00:00Z`)
-  d.setUTCDate(d.getUTCDate() + days)
-  return d.toISOString().slice(0, 10)
-}
 
 const ALL: Address[] = Array.from({ length: 160 }, (_, i) => {
   const id = 5000 + i

@@ -5,12 +5,12 @@ import { MapBlock } from "@/components/list/map-block"
 import { Btn } from "@/components/list/ui"
 import { toast } from "@/components/shared/toast"
 import { CITY, pick, rnd } from "@/lib/demo-names"
-import { STREETS } from "@/lib/dippp"
+import { OPERATORS, STREETS, TECH } from "@/lib/dippp"
+import { briefFacts, briefStats, type BriefItem } from "@/lib/list/brief"
 import { exportCsv } from "@/lib/list/query"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig } from "@/lib/list/types"
 import { fmt } from "@/lib/period"
-import { OPERATORS, TECH } from "./addresses"
 
 /*
  * 37 Предварительная проверка ТВ (ОТПП ТК ДИППП, п. 16): адреса из поля ввода или файла сверяются и проверяются
@@ -141,21 +141,19 @@ function Tool() {
 
 function record(x: Precheck) {
   const fix = x.fixed ? "Опечатка в названии улицы — предложен вариант 2ГИС" : "Не требуется"
-  // поля вкладки «Результат»; `s` — текст поля для плашек
-  const found = [
+  // поля вкладки «Результат» — из них же плашки и «Кратко»
+  const found: BriefItem[] = [
     { t: "Введено", v: x.src, s: x.src, wide: true },
     { t: "Нормализовано", v: x.norm, s: x.norm, wide: true },
     { t: "Исправление", v: fix, s: fix, wide: true },
   ]
-  const prelim = [
+  const prelim: BriefItem[] = [
     { t: "Вывод", v: verdict(x), s: VERDICT[x.v][0] },
     { t: "До узла сети", v: `${fmt(x.node)} м`, s: `${fmt(x.node)} м` },
     { t: "Технология", v: x.tech, s: x.tech },
     { t: "История адреса", v: HIST[x.hist], s: HIST[x.hist] },
     { t: "Сети СО", v: x.so.join(", ") || "нет", s: x.so.join(", ") || "нет" },
   ]
-  // плашки — как в макете: числовая колонка, затем короткие (до 26 знаков) поля карточки, кроме совпадающих с заголовком; не больше 4
-  const stats = [{ t: "До узла сети (ЕСТУ)", v: `${fmt(x.node)} м`, s: "" }, ...[...found, ...prelim].filter((f) => f.s.length <= 26 && f.s !== x.norm)].slice(0, 4)
   return {
     title: x.norm,
     meta: (
@@ -168,9 +166,8 @@ function record(x: Precheck) {
       { icon: ClipboardCheck, label: "Создать заявку на детальную проверку", href: "/tech-requests/new" },
       { icon: MapPin, label: "История адреса", href: "/addresses" },
     ],
-    stats: stats.map(({ t, v }) => ({ t, v })),
-    // «Кратко» — все поля вкладки «Результат», как в макете
-    facts: [...found, ...prelim].map(({ t, v }) => ({ t, v })),
+    stats: briefStats(x.norm, [{ t: "До узла сети (ЕСТУ)", v: `${fmt(x.node)} м` }, ...found, ...prelim]),
+    facts: briefFacts([...found, ...prelim]),
     tabs: [
       {
         t: "Результат",

@@ -15,3 +15,18 @@ export const CATEGORIES_SHORT = ["Детальная", "Предваритель
 
 export const BRANCHES = ["АФ", "АС", "ВФ", "ЗФ", "МФ", "УФ", "ЮФ", "КФ", "ШФ", "ГО-ДКП", "ГО-ДУКО"]
 export const STREETS = ["пр. Абая", "ул. Кунаева", "пр. Республики", "ул. Сатпаева", "пр. Назарбаева", "ул. Толе би", "пр. Аль-Фараби", "ул. Байтурсынова", "пр. Мангилик Ел", "ул. Жамбыла"]
+
+/** Сторонние операторы (сети СО), технологии подключения и услуги в заявках ТВ / ID-каналах. */
+export const OPERATORS = ["Казахтелеком", "Транстелеком", "Beeline Business", "Kcell", "Алма ТВ", "2Day Telecom", "Jusan Mobile"]
+export const TECH = ["ВОЛС · FTTB", "ВОЛС · GPON", "РРЛ", "Радиомост", "Спутник VSAT", "Медь xDSL"]
+export const TV_SERVICES = ["Интернет", "VPN L2", "VPN L3", "Аренда канала", "IP-телефония", "Видеонаблюдение", "kCloud"]
+
+/** «Сегодня» в примерах данных ДИППП — последний день копии базы. */
+export const TODAY = "2018-03-30"
+
+/** Дата «YYYY-MM-DD» со сдвигом в днях (UTC — без сдвига часового пояса). */
+export const shiftDate = (base: string, days: number) => {
+  const d = new Date(`${base}T00:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + days)
+  return d.toISOString().slice(0, 10)
+}

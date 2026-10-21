@@ -18,6 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { CURRENT_USER } from "@/lib/current-user"
+import { useProfile } from "@/lib/profile"
 import { cn } from "@/lib/utils"
 import { GroupTitle, Thumb } from "./mega-menu"
 
@@ -241,15 +242,18 @@ export function SettingsPopover({ trigger }: { trigger: React.ReactNode }) {
 
 /* ---------- Профиль ---------- */
 
+/** Аватар пользователя: фото из профиля или инициалы. */
 export function Avatar({ className }: { className?: string }) {
+  const photo = useProfile("avatar")
   return (
     <span
       className={cn(
-        "grid size-[38px] flex-none place-items-center rounded-full bg-[linear-gradient(135deg,#085eff,#001a9f)] text-sm font-bold text-white",
+        "grid size-[38px] flex-none place-items-center rounded-full bg-[linear-gradient(135deg,#085eff,#001a9f)] bg-cover bg-center text-sm font-bold text-white",
         className
       )}
+      style={photo ? { backgroundImage: `url(${photo})` } : undefined}
     >
-      {CURRENT_USER.initials}
+      {!photo && CURRENT_USER.initials}
     </span>
   )
 }

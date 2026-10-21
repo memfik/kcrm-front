@@ -1,5 +1,5 @@
-import { ChartColumn, CircleCheck, CircleX, Clock, Download, FilePlus, Globe, Hash, Lock, Mail, TriangleAlert, Undo2 } from "lucide-react"
-import { Banner, DateCell, Kv, Line, NameCell, Owner, Pill, Section, Status } from "@/components/list/cells"
+import { ChartColumn, CircleCheck, CircleX, Clock, Download, FilePlus, Globe, Hash, Lock, TriangleAlert, Undo2 } from "lucide-react"
+import { Banner, DateCell, Kv, Line, MailLine, NameCell, Owner, Pill, Section, Status } from "@/components/list/cells"
 import { toast } from "@/components/shared/toast"
 import requests from "@/data/tech-requests-demo.json"
 import { counterpartyName, fixClient, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
@@ -76,19 +76,6 @@ const made = (r: string[]) => ALL.filter((x) => inRange(x.date, r)).length
 const opts = (list: string[]): Option[] => list.map((v) => ({ v, label: v }))
 const staffOpts: Option[] = [...new Set(ALL.map((x) => x.u))].map((v) => ({ v, label: managerName(v) }))
 const save = (x: IpRequest) => rowsStore.save(IP_REQUESTS, x)
-
-function MailLine({ who, what, d }: { who: string; what: string; d: string }) {
-  return (
-    <Line icon={Mail}>
-      <b>{who}</b>
-      <span className="text-[12.5px] text-muted-foreground">{what}</span>
-      <span className="flex-1" />
-      <Pill>
-        <DateCell d={d} />
-      </Pill>
-    </Line>
-  )
-}
 
 function record(x: IpRequest) {
   const final = FINAL.includes(x.st)

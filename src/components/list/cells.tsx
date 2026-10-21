@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react"
+import { Mail, type LucideIcon } from "lucide-react"
 import { shortDate } from "@/lib/period"
 import { cn } from "@/lib/utils"
 
@@ -86,6 +86,8 @@ export const Dash = () => <span className="font-normal text-[var(--faint)]">—<
 
 export function DateCell({ d }: { d: string | null }) {
   if (!d) return <Dash />
+  // не дата («сейчас») — как есть
+  if (!/^\d{4}-\d\d-\d\d/.test(d)) return <>{d}</>
   return (
     <>
       {shortDate(d)}
@@ -249,5 +251,19 @@ export function MiniTable({ head, rows }: { head: { t: string; right?: boolean }
         </tbody>
       </table>
     </div>
+  )
+}
+
+/** Письмо в журнале уведомлений: кому, о чём, когда. */
+export function MailLine({ who, what, d }: { who: string; what: string; d: string }) {
+  return (
+    <Line icon={Mail}>
+      <b>{who}</b>
+      <span className="text-[12.5px] text-muted-foreground">{what}</span>
+      <span className="flex-1" />
+      <Pill>
+        <DateCell d={d} />
+      </Pill>
+    </Line>
   )
 }

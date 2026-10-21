@@ -519,3 +519,26 @@ html.compact .ltbl tbody td {
   .ltbl .sr { position: static; }
 }
 }
+/* Лист договора (Конструктор договора, макет 30). */
+@layer components {
+  .contract-doc {
+    font-family: "Times New Roman", Georgia, serif;
+  }
+  .contract-doc h2 { text-align: center; font-size: 17px; font-weight: 700; margin: 0 0 4px; }
+  .contract-doc .c { text-align: center; }
+  .contract-doc p { margin: 0 0 10px; }
+  .contract-doc h4 { font-size: 14px; font-weight: 700; margin: 18px 0 6px; }
+  .contract-doc .two { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .contract-doc .kz { color: #444; }
+  .contract-doc table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  .contract-doc td,
+  .contract-doc th { border: 1px solid #999; padding: 6px 8px; text-align: left; }
+  .contract-doc th { background: #f1f3f7; font-weight: 700; }
+  .contract-doc .r { text-align: right; }
+  .contract-doc [contenteditable] { outline: 1px dashed transparent; border-radius: 3px; }
+  .contract-doc [contenteditable]:hover { outline-color: #085eff; }
+  .contract-doc mark { background: #fff3b0; padding: 0 2px; }
+  @media (max-width: 640px) {
+    .contract-doc .two { grid-template-columns: 1fr; }
+  }
+}

@@ -224,6 +224,7 @@ export const TV_PRECHECK: ListConfig<Precheck> = {
     ],
     facts: [
       { t: "Город", v: x.city },
+      { t: "До узла сети (ЕСТУ)", v: `${fmt(x.node)} м` },
       { t: "История адреса", v: HIST[x.hist] },
       { t: "Сети СО", v: x.so.join(", ") || "нет" },
       { t: "Введено", v: x.src },

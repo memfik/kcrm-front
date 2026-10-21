@@ -129,6 +129,8 @@ export type ListConfig<T extends Row> = {
     icon?: LucideIcon
     first?: boolean
   }
+  /** Своя страница записи вместо карточки (каталог отчётов: строка открывает отчёт). */
+  rowHref?: (x: T) => string | undefined
   /** Без вида «Карточки» — только таблица. */
   noCards?: boolean
   /** Записи не удаляют (каталог отчётов): нет «Удалить» в списке и карточке. */

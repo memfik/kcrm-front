@@ -60,7 +60,8 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   const rp = range(period, 1, cfg.anchor)
   const kpis = useMemo(() => cfg.kpis(range(period, 0, cfg.anchor), range(period, 1, cfg.anchor)), [cfg, period])
 
-  const open = (x: T) => router.push(recordHref(cfg.key, x.id))
+  const href = (x: T) => cfg.rowHref?.(x) ?? recordHref(cfg.key, x.id)
+  const open = (x: T) => router.push(href(x))
   const toggle = (id: number) => {
     const s = new Set(checked)
     if (s.has(id)) s.delete(id)
@@ -279,7 +280,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
                       ))}
                       <td className="sr max-sm:static" onClick={(e) => e.stopPropagation()}>
                         <div className="flex justify-end gap-1.5">
-                          <Link href={recordHref(cfg.key, x.id)} className={roundAction} title="Открыть">
+                          <Link href={href(x)} className={roundAction} title="Открыть">
                             <Eye />
                           </Link>
                           {editable(cfg) && (
@@ -502,7 +503,7 @@ function Cards<T extends Row>({
         return (
           <div
             key={x.id}
-            onClick={() => router.push(recordHref(cfg.key, x.id))}
+            onClick={() => router.push(cfg.rowHref?.(x) ?? recordHref(cfg.key, x.id))}
             className={cn(
               "relative flex min-w-0 cursor-pointer flex-col overflow-hidden rounded-[20px] border border-border bg-[var(--row-s)] transition-[transform,box-shadow] duration-250 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:-translate-y-[3px] hover:shadow-[0_18px_40px_-18px_rgba(0,0,0,0.5)]",
               on && "border-[#085eff] shadow-[0_0_0_1px_#085eff]"
@@ -542,7 +543,7 @@ function Cards<T extends Row>({
                 )}
                 <RowMenu cfg={cfg} row={x} onDelete={() => onDelete(x)} />
                 <Link
-                  href={recordHref(cfg.key, x.id)}
+                  href={cfg.rowHref?.(x) ?? recordHref(cfg.key, x.id)}
                   className="ml-auto inline-flex h-9 items-center gap-2 rounded-full border border-border bg-card px-4 text-[13.5px] font-semibold transition-colors hover:border-[#085eff] hover:bg-[#085eff] hover:text-white"
                 >
                   <ArrowRight className="size-4" />

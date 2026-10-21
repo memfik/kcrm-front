@@ -46,7 +46,7 @@ export type Action = {
   href?: string
   primary?: boolean
   /** Кнопка шапки списка: выгрузка, импорт или массовое действие над выбранными (`bulk`). */
-  onClick?: "export" | "import" | "bulk"
+  onClick?: "export" | "import" | "bulk" | "analytics"
   /** Действие карточки, меняющее запись (решение, статус): возвращает новую версию. */
   apply?: () => Row
   /** Действие карточки с побочным эффектом (перенос в другой раздел); может вернуть адрес для перехода. */
@@ -117,8 +117,20 @@ export type ListConfig<T extends Row> = {
   /** Последний месяц с данными, если не общий (см. period.ANCHOR). */
   anchor?: string
   kpis: (r: string[], rp: string[]) => KpiDef[]
-  /** Вид «Аналитика» рядом со «Списком». */
-  analytics?: { title: string; render: (ctx: { r: string[]; p: Period }) => ReactNode }
+  /**
+   * Второй вид рядом со «Списком»: аналитика (график, воронка) или, у календаря, сетка месяца.
+   * `tab` / `icon` — подпись вкладки (по умолчанию «Аналитика»), `first` — открывать этот вид первым.
+   */
+  analytics?: {
+    title: string
+    /** `jump` растёт при каждом нажатии кнопки шапки с onClick: "analytics" — вид может откликнуться («Перейти на сегодня»). */
+    render: (ctx: { r: string[]; p: Period; rows: T[]; jump: number }) => ReactNode
+    tab?: string
+    icon?: LucideIcon
+    first?: boolean
+  }
+  /** Без вида «Карточки» — только таблица. */
+  noCards?: boolean
   archive?: Archive<T>
   /** Массовое действие над выбранными — для кнопки с onClick: "bulk». Возвращает отмену. */
   bulk?: { done: string; run: (rows: T[]) => () => void }

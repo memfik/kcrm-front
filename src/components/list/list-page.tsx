@@ -32,7 +32,8 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   const [checked, setChecked] = useState<Set<number>>(new Set())
   const [more, setMore] = useState(false)
   const mode = useViewMode()
-  const [tabView, setTabView] = useSectionView(cfg.key, !!cfg.analytics)
+  const [tabView, setTabView] = useSectionView(cfg.key, !!cfg.analytics, !!cfg.analytics?.first)
+  const [jump, setJump] = useState(0)
   const del = useDeleteDialog(cfg)
 
   const setQ = (next: Query) => {
@@ -65,6 +66,11 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   const allOnPage = view.length > 0 && view.every((x) => checked.has(x.id))
   const action = (a: Action) => {
     if (!a.onClick) return toast(`«${a.label}» — после подключения API`)
+    if (a.onClick === "analytics") {
+      setTabView("ana")
+      setJump((n) => n + 1)
+      return
+    }
     if (a.onClick === "export") {
       const target = checked.size ? rows.filter((x) => checked.has(x.id)) : list
       exportCsv(cfg, target)
@@ -138,11 +144,9 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
         <div className="mt-[18px] flex flex-wrap items-center gap-2.5 max-sm:gap-2">
           {cfg.analytics && (
             <div className="flex gap-1 rounded-full border border-border bg-card p-1">
-              {(
-                [
-                  ["list", "Список", List],
-                  ["ana", "Аналитика", ChartLine],
-                ] as const
+              {(cfg.analytics.first
+                ? ([["ana", cfg.analytics.tab ?? "Аналитика", cfg.analytics.icon ?? ChartLine], ["list", "Список", List]] as const)
+                : ([["list", "Список", List], ["ana", cfg.analytics.tab ?? "Аналитика", cfg.analytics.icon ?? ChartLine]] as const)
               ).map(([k, t, I]) => (
                 <button
                   key={k}
@@ -187,7 +191,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
 
         {cfg.analytics && tabView === "ana" && (
           <section className="rise mt-3 rounded-3xl border border-border bg-card px-6 py-5 shadow-[var(--panel-shadow)] max-sm:rounded-[20px] max-sm:px-4">
-            {cfg.analytics.render({ r, p: period })}
+            {cfg.analytics.render({ r, p: period, rows, jump })}
           </section>
         )}
 
@@ -216,12 +220,12 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
               </span>
               <span className="sm:hidden">{checked.size || ""}</span>
             </Btn>
-            <ViewSwitch mode={mode.value} onChange={mode.set} />
+            {!cfg.noCards && <ViewSwitch mode={mode.value} onChange={mode.set} />}
           </div>
 
           <ActiveChips cfg={cfg} q={q} setQ={setQ} />
 
-          {mode.value === "r" ? (
+          {mode.value === "r" || cfg.noCards ? (
             <div className="max-h-[calc(100vh-120px)] overflow-auto max-sm:max-h-none">
               <table className="ltbl w-full text-[13.5px] max-sm:text-[13px]">
                 <thead>
@@ -399,8 +403,8 @@ function useViewMode() {
 }
 
 /** «Список / Аналитика» у раздела — помнится для каждого раздела. */
-function useSectionView(key: string, has: boolean) {
-  const [v, setV] = useState<"list" | "ana">("list")
+function useSectionView(key: string, has: boolean, first: boolean) {
+  const [v, setV] = useState<"list" | "ana">(first ? "ana" : "list")
   useEffect(() => {
     if (!has) return
     try {

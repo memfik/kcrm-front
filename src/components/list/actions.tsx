@@ -3,10 +3,14 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Dialog, DropdownMenu } from "radix-ui"
-import { CircleX, Copy, Ellipsis, Eye, Pencil, Share2, Trash2 } from "lucide-react"
+import { Check, CircleX, Copy, Ellipsis, Eye, Pencil, Share2, Trash2, Users } from "lucide-react"
 import { toast } from "@/components/shared/toast"
+import { GlassTextarea } from "@/components/ui/opaline/glass-textarea"
+import { ownerColor, pick, STAFF } from "@/lib/demo-names"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
+import { cn } from "@/lib/utils"
+import { Avatar, Pill } from "./cells"
 import { DateField } from "./date-field"
 import { FormSelect } from "./select"
 import { Btn, roundAction } from "./ui"
@@ -189,3 +193,79 @@ export function RowMenu<T extends Row>({ cfg, row, onDelete }: { cfg: ListConfig
     </DropdownMenu.Root>
   )
 }
+
+/** «Передать»: выбор нового ответственного из сотрудников + комментарий; после — тост с «Отменить». */
+export function useDelegateDialog<T extends Row>(cfg: ListConfig<T>) {
+  const [row, setRow] = useState<T | null>(null)
+  const [to, setTo] = useState("")
+  const own = cfg.owner
+  const people = STAFF.slice(0, 14)
+  const ask = (x: T) => {
+    setTo(people[0])
+    setRow(x)
+  }
+
+  const dialog = own?.set ? (
+    <Dialog.Root open={!!row} onOpenChange={(o) => !o && setRow(null)}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-[110] bg-[rgba(5,6,9,0.5)] data-[state=open]:animate-in data-[state=open]:fade-in" />
+        <Dialog.Content
+          aria-describedby={undefined}
+          className="fixed top-1/2 left-1/2 z-[111] w-[min(460px,calc(100vw-32px))] -translate-1/2 rounded-[26px] border border-border bg-background p-6 shadow-[0_30px_80px_rgba(0,0,0,0.5)] data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 max-sm:p-5"
+        >
+          <div className="mb-3.5 grid size-[52px] place-items-center rounded-2xl bg-[rgba(8,94,255,0.12)] text-[#085eff]">
+            <Users className="size-6" />
+          </div>
+          <Dialog.Title className="text-[19px] font-bold">Передать</Dialog.Title>
+          <p className="mt-1.5 mb-3 text-[13.5px] text-muted-foreground">{row && cfg.name(row)}</p>
+          <div role="radiogroup" aria-label={own.t} className="mb-3 flex max-h-[260px] flex-col gap-0.5 overflow-auto">
+            {people.map((u) => (
+              <button
+                key={u}
+                type="button"
+                role="radio"
+                aria-checked={to === u}
+                onClick={() => setTo(u)}
+                className={cn(
+                  "flex cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13.5px] hover:bg-[var(--soft)]",
+                  to === u && "bg-[color-mix(in_srgb,#085eff_10%,transparent)]"
+                )}
+              >
+                <Avatar name={own.name(u)} color={ownerColor(u)} />
+                {own.name(u)}
+                <span className="flex-1" />
+                <Pill>{pick(BRANCHES, u, 2)}</Pill>
+                {to === u && <Check className="size-4 text-[#085eff]" />}
+              </button>
+            ))}
+          </div>
+          <div className="mb-4 flex flex-col gap-1.5 text-[12.5px] text-muted-foreground">
+            Комментарий
+            <GlassTextarea placeholder="Например: клиент в зоне вашего филиала" minRows={2} containerClassName="rounded-xl" className="text-sm text-foreground" />
+          </div>
+          <div className="flex justify-end gap-2.5">
+            <Dialog.Close asChild>
+              <Btn>Отмена</Btn>
+            </Dialog.Close>
+            <Btn
+              primary
+              onClick={() => {
+                if (!row || !own.set) return
+                const before = row
+                rowsStore.save(cfg, own.set(row, to))
+                setRow(null)
+                toast(`Передано: ${own.name(to)}`, () => rowsStore.save(cfg, before))
+              }}
+            >
+              <Check />
+              Передать
+            </Btn>
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  ) : null
+  return { ask, dialog, can: !!own?.set }
+}
+
+const BRANCHES = ["АФ", "АС", "ВФ", "ЗФ", "МФ", "УФ", "ЮФ", "КФ", "ШФ", "ГО-ДКП", "ГО-ДУКО"]

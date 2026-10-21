@@ -49,6 +49,8 @@ export type Action = {
   apply?: () => Row
   /** Действие карточки с побочным эффектом (перенос в другой раздел); может вернуть адрес для перехода. */
   run?: () => string | void
+  /** Открыть диалог «Передать» (смена ответственного, см. owner.set). */
+  delegate?: boolean
 }
 
 export type Field<T> = {
@@ -102,7 +104,14 @@ export type ListConfig<T extends Row> = {
   sort: [string, 1 | -1]
   cols: Column<T>[]
   /** Колонка ответственного — фильтр «Ещё» и блок «Ответственный». */
-  owner?: { t: string; get: (x: T) => string; name: (id: string) => string; render: (x: T) => ReactNode }
+  owner?: {
+    t: string
+    get: (x: T) => string
+    name: (id: string) => string
+    render: (x: T) => ReactNode
+    /** Сменить ответственного — включает «Передать» в карточке. */
+    set?: (x: T, id: string) => T
+  }
   /** Последний месяц с данными, если не общий (см. period.ANCHOR). */
   anchor?: string
   kpis: (r: string[], rp: string[]) => KpiDef[]
@@ -114,6 +123,8 @@ export type ListConfig<T extends Row> = {
   /** Колонка статуса для плашки на карточке (по умолчанию «st»). */
   cardStatus?: string
   sub: (r: string[], rp: string[], p: Period) => string
+  /** Пометка в подвале страницы («лиды — пример данных…»). */
+  foot?: string
   record: (x: T) => RecordView
   /** Без полей — раздел только для просмотра: нет /new, /edit и «Изменить». */
   fields?: Field<T>[]

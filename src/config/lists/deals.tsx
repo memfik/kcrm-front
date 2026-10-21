@@ -291,7 +291,7 @@ export const DEALS: ListConfig<Deal> = {
     { k: "fore", t: "Прогноз", num: true, value: (x) => x.fore, render: (x) => tenge(x.fore) },
     { k: "fact", t: "Факт", num: true, value: (x) => x.fact, render: (x) => (x.fact ? tenge(x.fact) : <Dash />) },
   ],
-  owner: { t: "Менеджер", get: (x) => x.u, name: managerName, render: (x) => owner(x.u) },
+  owner: { t: "Менеджер", get: (x) => x.u, name: managerName, render: (x) => owner(x.u), set: (x, u) => ({ ...x, u }) },
   anchor: ANCHOR,
   kpis: (r, rp) => {
     const sum = (rows: Deal[]) => rows.reduce((a, x) => a + x.exp, 0)

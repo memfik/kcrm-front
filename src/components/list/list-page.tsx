@@ -299,6 +299,14 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
         </section>
       </div>
 
+      <footer className="flex flex-wrap justify-between gap-3 px-[34px] pt-1 pb-[30px] text-[12.5px] text-[var(--faint)] max-sm:px-4 max-sm:pb-6">
+        <span>© АО «QMobile» · kCRM{cfg.foot ? ` · ${cfg.foot}` : ""}</span>
+        <span className="flex items-center gap-2">
+          <i className="size-2 rounded-full bg-[#34c759]" />
+          Служба работает
+        </span>
+      </footer>
+
       <MoreFilters cfg={cfg} rows={rows} q={q} open={more} onOpenChange={setMore} onApply={(next) => {
         setQ(next)
         toast(`Фильтры применены · ${applyQuery(cfg, rows, next).length} записей`)

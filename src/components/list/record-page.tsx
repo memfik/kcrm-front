@@ -7,7 +7,7 @@ import { toast } from "@/components/shared/toast"
 import { rowsStore, useRows, viewStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
-import { editable, recordHref, removeLabel, shareLink, useDeleteDialog } from "./actions"
+import { editable, recordHref, removeLabel, shareLink, useDelegateDialog, useDeleteDialog } from "./actions"
 import { Fresh } from "./cells"
 import { Btn, BtnLink } from "./ui"
 
@@ -18,6 +18,7 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
   const x = rows.find((r) => r.id === id)
   const [tab, setTab] = useState(0)
   const del = useDeleteDialog(cfg)
+  const pass = useDelegateDialog(cfg)
 
   if (!x)
     return (
@@ -107,6 +108,7 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
                 key={a.label}
                 primary={i === 0}
                 onClick={() => {
+                  if (a.delegate && pass.can) return pass.ask(x)
                   if (a.run) {
                     const href = a.run()
                     if (href) router.push(href)
@@ -173,7 +175,7 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
               <h4 className="mb-3 text-[15px] font-bold">Ответственный</h4>
               {cfg.owner.render(x)}
               <div className="mt-3 flex gap-2">
-                <Btn className="h-[38px] flex-1" onClick={() => toast("Передача ответственного — после подключения API")}>
+                <Btn className="h-[38px] flex-1" onClick={() => (pass.can ? pass.ask(x) : toast("Передача ответственного — после подключения API"))}>
                   <Users />
                   Передать
                 </Btn>
@@ -187,6 +189,7 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
         </aside>
       </div>
       {del.dialog}
+      {pass.dialog}
     </div>
   )
 }

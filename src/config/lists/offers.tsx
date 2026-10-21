@@ -192,7 +192,7 @@ export const OFFERS_LIST: ListConfig<Offer> = {
     { k: "s", t: "Сумма", num: true, value: (x) => x.s, render: (x) => (x.s ? tenge(x.s) : <Dash />) },
     { k: "act", t: "Статус", value: (x) => STATUS[statusOf(x)][0], render: status },
   ],
-  owner: { t: "Менеджер", get: (x) => x.u, name: managerName, render: (x) => owner(x.u) },
+  owner: { t: "Менеджер", get: (x) => x.u, name: managerName, render: (x) => owner(x.u), set: (x, u) => ({ ...x, u }) },
   kpis: (r, rp) => [
     { t: "КП выставлено", icon: FileText, c: sumOf(OFFERS, r), p: sumOf(OFFERS, rp) },
     { t: "Сумма КП", icon: CircleDollarSign, c: sumOf(SUMS, r), p: sumOf(SUMS, rp), f: tenge },

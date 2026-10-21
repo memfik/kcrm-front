@@ -341,7 +341,7 @@ export const COUNTERPARTIES: ListConfig<Counterparty> = {
     { k: "ct", t: "Договоры", num: true, value: (x) => x.ct, render: (x) => zero(x.ct) },
     { k: "last", t: "Последнее КП", date: true, value: (x) => x.last, render: (x) => <DateCell d={x.last} /> },
   ],
-  owner: { t: "Владелец", get: (x) => x.uid, name: managerName, render: (x) => owner(x.uid) },
+  owner: { t: "Владелец", get: (x) => x.uid, name: managerName, render: (x) => owner(x.uid), set: (x, uid) => ({ ...x, uid }) },
   kpis: (r, rp) => [
     { t: "Всего в работе", icon: Users, c: ALL.length, note: "с КП или договором из 7 683" },
     { t: "Получили КП", icon: FileText, c: received(r), p: received(rp) },

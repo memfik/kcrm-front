@@ -149,7 +149,7 @@ export function MoreFilters<T extends Row>({
   const found = useMemo(() => applyQuery(cfg, rows, draft).length, [cfg, rows, draft])
   const dc = dateCol(cfg)
   const nc = numCol(cfg)
-  const owners = useMemo(() => (cfg.owner ? [...new Set(rows.map(cfg.owner.get))].slice(0, 24) : []), [cfg, rows])
+  const owners = useMemo(() => (cfg.owner ? [...new Set(rows.map(cfg.owner.get))].filter(Boolean).slice(0, 24) : []), [cfg, rows])
 
   const toggle = (list: string[], v: string) => (list.includes(v) ? list.filter((x) => x !== v) : [...list, v])
   const quick = (months: number) => {

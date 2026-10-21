@@ -4,7 +4,7 @@ import { ALL_SECTIONS, NAV_GROUPS, findSection } from "@/config/nav"
 import { PageHero } from "@/components/shared/page-hero"
 
 /** Разделы со своими маршрутами — заглушка их не отдаёт. */
-const OWN_ROUTES = new Set(["counterparties", "deals", "offers", "discount-requests", "sandbox"])
+const OWN_ROUTES = new Set(["counterparties", "deals", "offers", "discount-requests", "sandbox", "leads"])
 
 export function generateStaticParams() {
   return ALL_SECTIONS.filter((s) => !OWN_ROUTES.has(s.slug)).map((s) => ({ section: s.slug }))

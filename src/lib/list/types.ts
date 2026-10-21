@@ -38,7 +38,16 @@ export type KpiDef = {
   f?: (n: number) => string
 }
 
-export type Action = { icon: LucideIcon; label: string; href?: string; primary?: boolean; onClick?: "export" | "import" }
+export type Action = {
+  icon: LucideIcon
+  label: string
+  href?: string
+  primary?: boolean
+  /** Кнопка шапки списка: выгрузка, импорт или массовое действие над выбранными (`bulk`). */
+  onClick?: "export" | "import" | "bulk"
+  /** Действие карточки, меняющее запись (решение, статус): возвращает новую версию. */
+  apply?: () => Row
+}
 
 export type Field<T> = {
   k: string
@@ -98,6 +107,8 @@ export type ListConfig<T extends Row> = {
   /** Вид «Аналитика» рядом со «Списком». */
   analytics?: { title: string; render: (ctx: { r: string[]; p: Period }) => ReactNode }
   archive?: Archive<T>
+  /** Массовое действие над выбранными — для кнопки с onClick: "bulk" («Согласовать выбранные»). */
+  bulk?: { done: string; apply: (x: T) => T }
   /** Колонка статуса для плашки на карточке (по умолчанию «st»). */
   cardStatus?: string
   sub: (r: string[], rp: string[], p: Period) => string

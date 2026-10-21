@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronLeft, ChevronRight, CircleX, Pencil, Phone, Share2, Trash2, Users } from "lucide-react"
 import { toast } from "@/components/shared/toast"
-import { useRows, viewStore } from "@/lib/list/store"
+import { rowsStore, useRows, viewStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
 import { recordHref, removeLabel, shareLink, useDeleteDialog } from "./actions"
@@ -101,7 +101,15 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
                 {a.label}
               </BtnLink>
             ) : (
-              <Btn key={a.label} primary={i === 0} onClick={() => toast(`«${a.label}» — раздел в работе`)}>
+              <Btn
+                key={a.label}
+                primary={i === 0}
+                onClick={() => {
+                  if (!a.apply) return toast(`«${a.label}» — раздел в работе`)
+                  rowsStore.save(cfg, a.apply() as T)
+                  toast(`«${a.label}» — ${v.title}`, () => rowsStore.save(cfg, x))
+                }}
+              >
                 <a.icon />
                 {a.label}
               </Btn>

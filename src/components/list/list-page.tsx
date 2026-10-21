@@ -8,7 +8,7 @@ import { Kpi } from "@/components/shared/kpi"
 import { PeriodSwitch } from "@/components/shared/period-switch"
 import { toast } from "@/components/shared/toast"
 import { applyQuery, emptyQuery, exportCsv, type Query } from "@/lib/list/query"
-import { useRows, viewStore } from "@/lib/list/store"
+import { rowsStore, useRows, viewStore } from "@/lib/list/store"
 import type { Action, ListConfig, Row } from "@/lib/list/types"
 import { delta, fmt, prevLabel, range, type Period } from "@/lib/period"
 import { cn } from "@/lib/utils"
@@ -70,6 +70,13 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
     }
     // TODO: импорт из Excel/CSV — разбор и проверка строк на сервере
     if (a.onClick === "import") toast("Импорт из файла — после подключения API")
+    if (a.onClick === "bulk" && cfg.bulk) {
+      const target = rows.filter((x) => checked.has(x.id))
+      if (!target.length) return toast("Отметьте записи в списке")
+      target.forEach((x) => rowsStore.save(cfg, cfg.bulk!.apply(x)))
+      setChecked(new Set())
+      toast(`${cfg.bulk.done}: ${target.length}`, () => target.forEach((x) => rowsStore.save(cfg, x)))
+    }
   }
   const Icon = cfg.icon
 

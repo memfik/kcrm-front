@@ -82,10 +82,10 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
 
   return (
     <div className="relative isolate mx-auto w-full max-w-[1760px]">
-      {/* фон раздела, как в макете */}
+      {/* фон раздела — на всю ширину окна (не контейнера 1760 px, иначе на широком мониторе видны края) */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-[-90px] -z-10 h-[520px] bg-[radial-gradient(900px_420px_at_75%_10%,rgba(8,94,255,0.16),transparent_70%),radial-gradient(700px_360px_at_10%_0%,rgba(0,26,159,0.22),transparent_70%)] [mask-image:linear-gradient(180deg,#000_60%,transparent)]"
+        className="pointer-events-none absolute top-[-90px] left-1/2 w-screen -translate-x-1/2 -z-10 h-[520px] bg-[radial-gradient(900px_420px_at_75%_10%,rgba(8,94,255,0.16),transparent_70%),radial-gradient(700px_360px_at_10%_0%,rgba(0,26,159,0.22),transparent_70%)] [mask-image:linear-gradient(180deg,#000_60%,transparent)]"
       />
 
       <section className="flex flex-wrap items-center justify-between gap-5 px-[34px] pt-1.5 pb-4 max-sm:px-4 max-sm:pt-1 max-sm:pb-3">

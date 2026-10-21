@@ -78,8 +78,6 @@ export const NAV_GROUPS: NavGroup[] = [
       s("04", "deals", "Сделки", Briefcase, "Этапы и действия по сделке", undefined, "47"),
       s("32", "calls", "История звонков", Phone, "Звонки и записи разговоров"),
       s("08", "leads", "Лиды", Phone, "Звонки колл-центра"),
-      s("05", "offers", "КП", FileText, "Коммерческие предложения"),
-      s("28", "offer-builder", "Конструктор КП", FilePlus, "Создание КП"),
       s("06", "discount-requests", "Запросы скидки", Percent, "Согласование КП"),
     ],
     quick: [
@@ -98,7 +96,6 @@ export const NAV_GROUPS: NavGroup[] = [
       s("11", "ip-requests", "Заявки IP", Globe, "Выдача публичных адресов", "upd"),
       s("12", "number-capacity", "Номерная ёмкость", Hash, "Выделение номеров", "upd"),
       s("13", "subscribers", "Абоненты", IdCard, "Заведение в биллинг", undefined, "577"),
-      s("14", "install-acts", "Акты монтажа", ClipboardCheck, "Отправка в СЭДО"),
       s("37", "tv-precheck", "Предварительная проверка ТВ", Search, "Адреса из текста или файла", "new"),
       s("36", "addresses", "Адреса и история ТВ", MapPin, "Проверки, ТР и сети СО по адресу", "new"),
       s("38", "tv-registry", "Реестр заявок КТС-РФ-ДППП-26", List, "Локальные и централизованные", "new"),
@@ -145,7 +142,7 @@ export const NAV_GROUPS: NavGroup[] = [
     title: "Справочники",
     sections: [
       s("23", "catalog", "Продукт-каталог", BookOpen, "Услуги B2B / B2C / B2G"),
-      s("24", "price-builder", "Конструктор прейскуранта", SlidersHorizontal, "Версии прейскуранта"),
+      s("24", "price-builder", "Конструктор прейскуранта", SlidersHorizontal, "8 версий"),
       s("25", "contracts", "Договоры", Signature, "По шаблонам из КП", undefined, "2 896"),
       s("30", "contract-builder", "Конструктор договора", Signature, "Договор из КП"),
       s("26", "acts", "Акты", FileText, "Выполненных работ", undefined, "908"),
@@ -176,7 +173,17 @@ export const NAV_GROUPS: NavGroup[] = [
 /** Вне меню: 01 Вход → /login, 02 Главная → /, 29 Профиль. */
 export const PROFILE_SECTION = s("29", "profile", "Профиль", CircleUser)
 
-export const ALL_SECTIONS = [...NAV_GROUPS.flatMap((g) => g.sections), PROFILE_SECTION]
+/**
+ * Разделы, которых нет в мега-меню макета: в них попадают по быстрым действиям и кнопкам
+ * («Создать КП», «Акт монтажа», «Открыть реестр» на главной). Маршруты у них есть.
+ */
+export const HIDDEN_SECTIONS = [
+  s("05", "offers", "КП", FileText, "Коммерческие предложения"),
+  s("28", "offer-builder", "Конструктор КП", FilePlus, "Создание КП"),
+  s("14", "install-acts", "Акты монтажа", ClipboardCheck, "Отправка в СЭДО"),
+]
+
+export const ALL_SECTIONS = [...NAV_GROUPS.flatMap((g) => g.sections), ...HIDDEN_SECTIONS, PROFILE_SECTION]
 
 export function findSection(slug: string) {
   return ALL_SECTIONS.find((x) => x.slug === slug)

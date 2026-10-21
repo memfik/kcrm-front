@@ -184,10 +184,12 @@ export function RowMenu<T extends Row>({ cfg, row, onDelete }: { cfg: ListConfig
               Дублировать
             </DropdownMenu.Item>
           )}
-          <DropdownMenu.Item className={`${item} text-[#ff5257]`} onSelect={onDelete}>
-            {cfg.archive ? <CircleX /> : <Trash2 />}
-            {removeLabel(cfg)}
-          </DropdownMenu.Item>
+          {!cfg.noDelete && (
+            <DropdownMenu.Item className={`${item} text-[#ff5257]`} onSelect={onDelete}>
+              {cfg.archive ? <CircleX /> : <Trash2 />}
+              {removeLabel(cfg)}
+            </DropdownMenu.Item>
+          )}
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

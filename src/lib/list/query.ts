@@ -69,9 +69,9 @@ export function applyQuery<T extends Row>(cfg: ListConfig<T>, rows: T[], q: Quer
 /** Число дополнительных условий из «Ещё» — бейдж на кнопке. */
 export const extraCount = (q: Query) => (q.from || q.to ? 1 : 0) + (q.min !== "" || q.max !== "" ? 1 : 0) + q.own.length
 
-/** Выгрузка в Excel (CSV, «;», BOM — открывается в Excel с кириллицей). */
-export function exportCsv<T extends Row>(cfg: ListConfig<T>, rows: T[]) {
-  const cols: Column<T>[] = cfg.cols.filter((c) => !c.noSort)
+/** Выгрузка в Excel (CSV, «;», BOM — открывается в Excel с кириллицей): колонки раздела или любые свои (отчёты). */
+export function exportCsv<T>(cfg: { title: string; cols: Pick<Column<T>, "t" | "value" | "noSort">[] }, rows: T[]) {
+  const cols = cfg.cols.filter((c) => !c.noSort)
   const cell = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`
   const body = [cols.map((c) => cell(c.t)).join(";"), ...rows.map((x) => cols.map((c) => cell(c.value(x))).join(";"))].join("\n")
   const blob = new Blob(["\uFEFF" + body], { type: "text/csv;charset=utf-8" })

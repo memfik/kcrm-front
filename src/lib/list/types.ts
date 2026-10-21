@@ -131,9 +131,11 @@ export type ListConfig<T extends Row> = {
   }
   /** Без вида «Карточки» — только таблица. */
   noCards?: boolean
+  /** Записи не удаляют (каталог отчётов): нет «Удалить» в списке и карточке. */
+  noDelete?: boolean
   archive?: Archive<T>
-  /** Массовое действие над выбранными — для кнопки с onClick: "bulk». Возвращает отмену. */
-  bulk?: { done: string; run: (rows: T[]) => () => void }
+  /** Массовое действие над выбранными — для кнопки с onClick: "bulk». Возвращает отмену (если её можно отменить). */
+  bulk?: { done: string; run: (rows: T[]) => (() => void) | void }
   /** Колонка статуса для плашки на карточке (по умолчанию «st»). */
   cardStatus?: string
   sub: (r: string[], rp: string[], p: Period) => string

@@ -3,7 +3,7 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowRight, FileText, LayoutGrid, List, Pencil, Search, Trash2, Eye } from "lucide-react"
+import { ArrowRight, ChartLine, CircleX, Eye, FileText, LayoutGrid, List, Pencil, Search, Trash2 } from "lucide-react"
 import { Kpi } from "@/components/shared/kpi"
 import { PeriodSwitch } from "@/components/shared/period-switch"
 import { toast } from "@/components/shared/toast"
@@ -12,7 +12,7 @@ import { useRows, viewStore } from "@/lib/list/store"
 import type { Action, ListConfig, Row } from "@/lib/list/types"
 import { delta, fmt, prevLabel, range, type Period } from "@/lib/period"
 import { cn } from "@/lib/utils"
-import { recordHref, RowMenu, useDeleteDialog } from "./actions"
+import { recordHref, removeLabel, RowMenu, useDeleteDialog } from "./actions"
 import { ActiveChips, FilterChip, MoreButton, MoreFilters } from "./filters"
 import { Btn, roundAction } from "./ui"
 
@@ -31,6 +31,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   const [checked, setChecked] = useState<Set<number>>(new Set())
   const [more, setMore] = useState(false)
   const mode = useViewMode()
+  const [tabView, setTabView] = useSectionView(cfg.key, !!cfg.analytics)
   const del = useDeleteDialog(cfg)
 
   const setQ = (next: Query) => {
@@ -49,9 +50,9 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   const view = list.slice(pg * PAGE_SIZE, pg * PAGE_SIZE + PAGE_SIZE)
 
   const tabCounts = useMemo(() => Object.fromEntries((cfg.tabs ?? []).map((t) => [t.k, rows.filter(t.f).length])), [cfg, rows])
-  const r = range(period)
-  const rp = range(period, 1)
-  const kpis = useMemo(() => cfg.kpis(range(period), range(period, 1)), [cfg, period])
+  const r = range(period, 0, cfg.anchor)
+  const rp = range(period, 1, cfg.anchor)
+  const kpis = useMemo(() => cfg.kpis(range(period, 0, cfg.anchor), range(period, 1, cfg.anchor)), [cfg, period])
 
   const open = (x: T) => router.push(recordHref(cfg.key, x.id))
   const toggle = (id: number) => {
@@ -67,6 +68,8 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
       exportCsv(cfg, target)
       toast(`Выгружено ${target.length} записей в Excel (CSV)`)
     }
+    // TODO: импорт из Excel/CSV — разбор и проверка строк на сервере
+    if (a.onClick === "import") toast("Импорт из файла — после подключения API")
   }
   const Icon = cfg.icon
 
@@ -116,38 +119,69 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
               icon={k.icon}
               value={f(k.c)}
               d={k.p !== undefined ? delta(k.c, k.p, true) : undefined}
-              caption={k.p !== undefined ? `${prevLabel(period)} · было ${f(k.p)}` : k.note}
+              caption={k.p !== undefined ? `${prevLabel(period, cfg.anchor)} · было ${f(k.p)}` : k.note}
             />
           )
         })}
       </div>
 
       <div className="px-[34px] pb-10 max-sm:px-3 max-sm:pb-7">
-        {cfg.tabs && (
-          <div className="mt-[18px] flex w-max max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-card p-1 shadow-[var(--panel-shadow)] [scrollbar-width:none]">
-            {cfg.tabs.map((t) => {
-              const on = q.tab === t.k
-              return (
+        <div className="mt-[18px] flex flex-wrap items-center gap-2.5 max-sm:gap-2">
+          {cfg.analytics && (
+            <div className="flex gap-1 rounded-full border border-border bg-card p-1">
+              {(
+                [
+                  ["list", "Список", List],
+                  ["ana", "Аналитика", ChartLine],
+                ] as const
+              ).map(([k, t, I]) => (
                 <button
-                  key={t.k}
+                  key={k}
                   type="button"
-                  onClick={() => setQ({ ...q, tab: t.k })}
+                  onClick={() => setTabView(k)}
                   className={cn(
-                    "flex h-9 flex-none cursor-pointer items-center gap-[7px] rounded-full px-[15px] text-[13.5px] text-muted-foreground",
-                    on && "bg-foreground font-semibold text-background"
+                    "flex h-[38px] cursor-pointer items-center gap-2 rounded-full px-4 text-sm text-muted-foreground max-sm:h-[34px] max-sm:px-3 max-sm:text-[13px]",
+                    tabView === k && "bg-foreground font-semibold text-background"
                   )}
                 >
-                  {t.t}
-                  <span className={cn("rounded-full bg-[var(--soft)] px-[7px] py-px text-[11px] font-bold tabular-nums", on && "bg-background/20 text-inherit")}>
-                    {fmt(tabCounts[t.k] ?? 0)}
-                  </span>
+                  <I className="size-4" />
+                  {t}
                 </button>
-              )
-            })}
-          </div>
+              ))}
+            </div>
+          )}
+          {cfg.tabs && tabView === "list" && (
+            <div className="flex w-max max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-card p-1 shadow-[var(--panel-shadow)] [scrollbar-width:none]">
+              {cfg.tabs.map((t) => {
+                const on = q.tab === t.k
+                return (
+                  <button
+                    key={t.k}
+                    type="button"
+                    onClick={() => setQ({ ...q, tab: t.k })}
+                    className={cn(
+                      "flex h-9 flex-none cursor-pointer items-center gap-[7px] rounded-full px-[15px] text-[13.5px] text-muted-foreground",
+                      on && "bg-foreground font-semibold text-background"
+                    )}
+                  >
+                    {t.t}
+                    <span className={cn("rounded-full bg-[var(--soft)] px-[7px] py-px text-[11px] font-bold tabular-nums", on && "bg-background/20 text-inherit")}>
+                      {fmt(tabCounts[t.k] ?? 0)}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {cfg.analytics && tabView === "ana" && (
+          <section className="rise mt-3 rounded-3xl border border-border bg-card px-6 py-5 shadow-[var(--panel-shadow)] max-sm:rounded-[20px] max-sm:px-4">
+            {cfg.analytics.render()}
+          </section>
         )}
 
-        <section className="mt-3 min-w-0 rounded-3xl border border-border bg-card px-3 pt-4 pb-2 shadow-[var(--panel-shadow)] max-sm:rounded-[20px] max-sm:px-2 max-sm:pt-3 max-sm:pb-1.5">
+        <section hidden={tabView !== "list"} className="mt-3 min-w-0 rounded-3xl border border-border bg-card px-3 pt-4 pb-2 shadow-[var(--panel-shadow)] max-sm:rounded-[20px] max-sm:px-2 max-sm:pt-3 max-sm:pb-1.5">
           <div className="mx-1.5 mb-2 flex flex-wrap items-center gap-2.5 max-sm:mx-1 max-sm:grid max-sm:grid-cols-[1fr_auto_auto] max-sm:gap-2">
             <label className="flex h-11 min-w-[200px] flex-[0_1_320px] items-center gap-2.5 rounded-full border border-border bg-[var(--soft)] px-4 max-sm:col-span-full max-sm:h-[42px] max-sm:min-w-0 dark:bg-white/4">
               <Search className="size-[18px] text-muted-foreground" />
@@ -166,9 +200,9 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
             <MoreButton q={q} onClick={() => setMore(true)} />
             <span className="flex-1 max-sm:hidden" />
             <Btn danger disabled={!checked.size} onClick={() => del.ask(rows.filter((x) => checked.has(x.id)), () => setChecked(new Set()))} className="max-sm:h-[38px] max-sm:px-3">
-              <Trash2 />
+              {cfg.archive ? <CircleX /> : <Trash2 />}
               <span className="max-sm:hidden">
-                Удалить (<b className="font-semibold tabular-nums">{checked.size}</b>)
+                {removeLabel(cfg)} (<b className="font-semibold tabular-nums">{checked.size}</b>)
               </span>
               <span className="sm:hidden">{checked.size || ""}</span>
             </Btn>
@@ -343,6 +377,26 @@ function useViewMode() {
   return { value, set }
 }
 
+/** «Список / Аналитика» у раздела — помнится для каждого раздела. */
+function useSectionView(key: string, has: boolean) {
+  const [v, setV] = useState<"list" | "ana">("list")
+  useEffect(() => {
+    if (!has) return
+    try {
+      const saved = localStorage.getItem(`kcrm:v:${key}`)
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- localStorage доступен только после монтирования
+      if (saved === "ana" || saved === "list") setV(saved)
+    } catch {}
+  }, [key, has])
+  const set = (next: "list" | "ana") => {
+    setV(next)
+    try {
+      localStorage.setItem(`kcrm:v:${key}`, next)
+    } catch {}
+  }
+  return [has ? v : "list", set] as const
+}
+
 function ViewSwitch({ mode, onChange }: { mode: "r" | "c"; onChange: (m: "r" | "c") => void }) {
   const b = "grid h-[34px] w-9 cursor-pointer place-items-center rounded-full text-muted-foreground [&_svg]:size-4"
   return (
@@ -402,7 +456,7 @@ function Cards<T extends Row>({
 }) {
   const nc = cfg.cols.find((c) => c.num)
   const max = useMemo(() => (nc ? Math.max(1, ...all.map((x) => Number(nc.value(x) ?? 0))) : 1), [nc, all])
-  const status = cfg.cols.find((c) => c.k === "st")
+  const status = cfg.cols.find((c) => c.k === (cfg.cardStatus ?? "st"))
   const router = useRouter()
   const Icon = cfg.icon
   if (!rows.length) return <div className="py-10 text-center text-muted-foreground">Ничего не найдено — измените вкладку или фильтры</div>
@@ -436,7 +490,7 @@ function Cards<T extends Row>({
                 <>
                   <div className="mt-3 flex justify-between text-[12.5px] text-muted-foreground">
                     <span>{nc.t}</span>
-                    <b className="font-semibold text-foreground tabular-nums">{fmt(v)}</b>
+                    <b className="font-semibold text-foreground tabular-nums">{nc.render(x)}</b>
                   </div>
                   <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)]">
                     <i className="block h-full rounded-full" style={{ width: `${Math.max(4, pct)}%`, background: pct > 85 ? "#ff5257" : pct > 60 ? "#ffb340" : "#085eff" }} />
@@ -447,8 +501,8 @@ function Cards<T extends Row>({
                 <Link href={`${recordHref(cfg.key, x.id)}/edit`} className={roundAction} title="Изменить">
                   <Pencil />
                 </Link>
-                <button type="button" className={cn(roundAction, "hover:border-[#ff3b30] hover:bg-[#ff3b30]")} title="Удалить" onClick={() => onDelete(x)}>
-                  <Trash2 />
+                <button type="button" className={cn(roundAction, "hover:border-[#ff3b30] hover:bg-[#ff3b30]")} title={removeLabel(cfg)} onClick={() => onDelete(x)}>
+                  {cfg.archive ? <CircleX /> : <Trash2 />}
                 </button>
                 <RowMenu cfg={cfg} row={x} onDelete={() => onDelete(x)} />
                 <Link

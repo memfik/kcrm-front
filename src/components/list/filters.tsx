@@ -7,6 +7,8 @@ import { applyQuery, dateCol, extraCount, numCol, type Query } from "@/lib/list/
 import type { ListConfig, Row } from "@/lib/list/types"
 import { range, ymStr } from "@/lib/period"
 import { cn } from "@/lib/utils"
+import { GlassInput } from "@/components/ui/opaline/glass-input"
+import { DateField } from "./date-field"
 import { Btn } from "./ui"
 
 const chip =
@@ -160,7 +162,7 @@ export function MoreFilters<T extends Row>({
 
   const opt = "inline-flex h-[34px] cursor-pointer items-center gap-[7px] rounded-full border border-border bg-card px-[13px] text-[13px] transition-colors"
   const optOn = "border-[#085eff] bg-[#085eff] text-white"
-  const input = "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm outline-none focus:border-[#085eff] focus:ring-4 focus:ring-[#085eff]/15"
+  const input = "h-11 rounded-xl px-3.5 text-foreground"
   const h = "mt-[18px] mb-2 text-[13px] font-semibold first:mt-0"
 
   return (
@@ -236,8 +238,8 @@ export function MoreFilters<T extends Row>({
                   ))}
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
-                  <input type="date" aria-label="С" value={draft.from} onChange={(e) => setDraft({ ...draft, from: e.target.value })} className={input} />
-                  <input type="date" aria-label="По" value={draft.to} onChange={(e) => setDraft({ ...draft, to: e.target.value })} className={input} />
+                  <DateField placeholder="С" value={draft.from} onChange={(v) => setDraft({ ...draft, from: v })} />
+                  <DateField placeholder="По" value={draft.to} onChange={(v) => setDraft({ ...draft, to: v })} />
                 </div>
               </>
             )}
@@ -246,8 +248,8 @@ export function MoreFilters<T extends Row>({
               <>
                 <div className={h}>{nc.t}</div>
                 <div className="grid grid-cols-2 gap-2.5">
-                  <input inputMode="numeric" placeholder="от" value={draft.min} onChange={(e) => setDraft({ ...draft, min: e.target.value.replace(/\D/g, "") })} className={input} />
-                  <input inputMode="numeric" placeholder="до" value={draft.max} onChange={(e) => setDraft({ ...draft, max: e.target.value.replace(/\D/g, "") })} className={input} />
+                  <GlassInput inputMode="numeric" placeholder="от" value={draft.min} onChange={(e) => setDraft({ ...draft, min: e.target.value.replace(/\D/g, "") })} className={input} inputClassName="text-sm" />
+                  <GlassInput inputMode="numeric" placeholder="до" value={draft.max} onChange={(e) => setDraft({ ...draft, max: e.target.value.replace(/\D/g, "") })} className={input} inputClassName="text-sm" />
                 </div>
               </>
             )}

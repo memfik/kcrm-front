@@ -14,18 +14,19 @@ export const MON_SHORT = ["янв", "фев", "мар", "апр", "май", "и�
 export type Series = Record<string, number>
 export const series = (rows: string[][], col = 1): Series => Object.fromEntries(rows.map((r) => [r[0], +r[col]]))
 
-const ANCHOR = "2018-03"
+/** Опорный месяц по умолчанию; у раздела может быть свой (сделки в копии базы — до 2017-08). */
+export const ANCHOR = "2018-03"
 const ym = (s: string) => {
   const [y, m] = s.split("-").map(Number)
   return y * 12 + m - 1
 }
 export const ymStr = (k: number) => `${Math.floor(k / 12)}-${String((k % 12) + 1).padStart(2, "0")}`
-const A = ym(ANCHOR)
 const LEN: Record<Period, number> = { m: 1, q: 3, y: 12 }
 
 /** Месяцы периода («2018-03»…); shift = 1 — предыдущий период. */
-export function range(p: Period, shift = 0) {
+export function range(p: Period, shift = 0, anchor = ANCHOR) {
   const L = LEN[p]
+  const A = ym(anchor)
   let end = A
   if (p === "q") {
     end = A - ((A % 12) % 3) + 2
@@ -36,7 +37,8 @@ export function range(p: Period, shift = 0) {
 }
 export const yearAgo = (k: string) => ymStr(ym(k) - 12)
 /** 12 месяцев до опорного включительно — ось графиков. */
-export const LAST12 = Array.from({ length: 12 }, (_, j) => ymStr(A - 11 + j))
+export const last12 = (anchor = ANCHOR) => Array.from({ length: 12 }, (_, j) => ymStr(ym(anchor) - 11 + j))
+export const LAST12 = last12()
 export const monthShort = (k: string) => MON_SHORT[+k.slice(5) - 1]
 
 export const sumOf = (s: Series, r: string[]) => r.reduce((a, k) => a + (s[k] || 0), 0)
@@ -52,16 +54,16 @@ export function periodLabel(p: Period, r: string[]) {
 }
 
 /** «к февралю» / «к прошлому кварталу» / «к прошлым 12 мес.» */
-export function prevLabel(p: Period) {
+export function prevLabel(p: Period, anchor = ANCHOR) {
   if (p === "q") return "к прошлому кварталу"
   if (p === "y") return "к прошлым 12 мес."
-  return "к " + MON_DAT[+range(p, 1)[0].slice(5) - 1]
+  return "к " + MON_DAT[+range(p, 1, anchor)[0].slice(5) - 1]
 }
 /** Для подзаголовка: «К февралю» / «К прошлому кварталу» / «К прошлому году». */
-export function prevShort(p: Period) {
+export function prevShort(p: Period, anchor = ANCHOR) {
   if (p === "q") return "прошлому кварталу"
   if (p === "y") return "прошлому году"
-  return MON_DAT[+range(p, 1)[0].slice(5) - 1]
+  return MON_DAT[+range(p, 1, anchor)[0].slice(5) - 1]
 }
 
 const pct = (v: number) => Math.abs(v).toFixed(Math.abs(v) < 10 ? 1 : 0).replace(".", ",")

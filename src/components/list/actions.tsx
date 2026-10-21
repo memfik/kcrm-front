@@ -3,10 +3,12 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Dialog, DropdownMenu } from "radix-ui"
-import { Copy, Ellipsis, Eye, Pencil, Share2, Trash2 } from "lucide-react"
+import { CircleX, Copy, Ellipsis, Eye, Pencil, Share2, Trash2 } from "lucide-react"
 import { toast } from "@/components/shared/toast"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
+import { DateField } from "./date-field"
+import { FormSelect } from "./select"
 import { Btn, roundAction } from "./ui"
 
 export const recordHref = (key: string, id: number) => `/${key}/${id}`
@@ -21,13 +23,55 @@ export async function shareLink<T extends Row>(cfg: ListConfig<T>, x: T) {
   }
 }
 
-/** Подтверждение удаления; после — тост с «Отменить». */
+/** Надпись кнопки удаления: «Удалить» или, у разделов с архивом, «Расторгнуть». */
+export const removeLabel = <T extends Row>(cfg: ListConfig<T>) => cfg.archive?.verb ?? "Удалить"
+
+/**
+ * Подтверждение удаления; после — тост с «Отменить».
+ * У разделов с `archive` (сделки) — «Расторгнуть»: дата и причина обязательны, запись остаётся во вкладке «Расторгнутые».
+ */
 export function useDeleteDialog<T extends Row>(cfg: ListConfig<T>) {
   const [items, setItems] = useState<{ rows: T[]; done?: () => void } | null>(null)
-  const ask = (rows: T[], done?: () => void) => rows.length && setItems({ rows, done })
+  const [reason, setReason] = useState("")
+  const [date, setDate] = useState("")
+  const [invalid, setInvalid] = useState(false)
+  const ask = (rows: T[], done?: () => void) => {
+    if (!rows.length) return
+    setReason("")
+    setDate(new Date().toISOString().slice(0, 10))
+    setInvalid(false)
+    setItems({ rows, done })
+  }
 
-  const one = items?.rows.length === 1
-  const name = items ? (one ? cfg.name(items.rows[0]) : `${items.rows.length} записей`) : ""
+  const arc = cfg.archive
+  const n = items?.rows.length ?? 0
+  const one = n === 1
+  const name = items ? (one ? cfg.name(items.rows[0]) : `${n} записей`) : ""
+  const Icon = arc ? CircleX : Trash2
+
+  const confirm = () => {
+    if (!items) return
+    if (arc) {
+      if (!reason) return setInvalid(true)
+      const before = items.rows
+      before.forEach((x) => rowsStore.save(cfg, arc.apply(x, reason, date)))
+      items.done?.()
+      setItems(null)
+      toast(`${arc.verb === "Расторгнуть" ? "Расторгнуто" : arc.verb}: ${n} · ${arc.reasons.find((r) => r.v === reason)?.label}`, () => {
+        before.forEach((x) => rowsStore.save(cfg, x))
+        toast("Восстановлено")
+      })
+      return
+    }
+    const undo = rowsStore.remove(cfg, items.rows.map((x) => x.id))
+    items.done?.()
+    setItems(null)
+    toast(`Удалено: ${name}`, () => {
+      undo()
+      toast("Восстановлено")
+    })
+  }
+
   const dialog = (
     <Dialog.Root open={!!items} onOpenChange={(o) => !o && setItems(null)}>
       <Dialog.Portal>
@@ -37,33 +81,45 @@ export function useDeleteDialog<T extends Row>(cfg: ListConfig<T>) {
           className="fixed top-1/2 left-1/2 z-[111] w-[min(460px,calc(100vw-32px))] -translate-1/2 rounded-[26px] border border-border bg-background p-6 shadow-[0_30px_80px_rgba(0,0,0,0.5)] data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95 max-sm:p-5"
         >
           <div className="mb-3.5 grid size-[52px] place-items-center rounded-2xl bg-[rgba(255,82,87,0.12)] text-[#ff5257]">
-            <Trash2 className="size-6" />
+            <Icon className="size-6" />
           </div>
-          <Dialog.Title className="text-[19px] font-bold">Удалить {one ? "запись" : `${items?.rows.length} записей`}?</Dialog.Title>
+          <Dialog.Title className="text-[19px] font-bold">
+            {arc ? `${arc.verb} ${one ? arc.one : `${n} ${arc.many}`}?` : `Удалить ${one ? "запись" : `${n} записей`}?`}
+          </Dialog.Title>
           <p className="mt-1.5 mb-4 text-[13.5px] leading-normal text-muted-foreground">
             <b className="text-foreground">{name}</b>
             <br />
-            Удаление можно отменить сразу после него.
+            {arc ? arc.note : "Удаление можно отменить сразу после него."}
           </p>
+          {arc && (
+            <>
+              <div className="mb-3 flex flex-col gap-1.5 text-[12.5px] text-muted-foreground">
+                Дата
+                <DateField value={date} onChange={setDate} />
+              </div>
+              <div className="mb-3 flex flex-col gap-1.5 text-[12.5px] text-muted-foreground">
+                Причина
+                <FormSelect
+                  value={reason}
+                  aria-label="Причина"
+                  placeholder="Выберите причину…"
+                  invalid={invalid}
+                  options={arc.reasons}
+                  onChange={(v) => {
+                    setReason(v)
+                    setInvalid(false)
+                  }}
+                />
+              </div>
+            </>
+          )}
           <div className="flex justify-end gap-2.5">
             <Dialog.Close asChild>
               <Btn>Отмена</Btn>
             </Dialog.Close>
-            <Btn
-              red
-              onClick={() => {
-                if (!items) return
-                const undo = rowsStore.remove(cfg, items.rows.map((x) => x.id))
-                items.done?.()
-                setItems(null)
-                toast(`Удалено: ${name}`, () => {
-                  undo()
-                  toast("Восстановлено")
-                })
-              }}
-            >
-              <Trash2 />
-              Удалить
+            <Btn red onClick={confirm}>
+              <Icon />
+              {removeLabel(cfg)}
             </Btn>
           </div>
         </Dialog.Content>
@@ -118,8 +174,8 @@ export function RowMenu<T extends Row>({ cfg, row, onDelete }: { cfg: ListConfig
             Дублировать
           </DropdownMenu.Item>
           <DropdownMenu.Item className={`${item} text-[#ff5257]`} onSelect={onDelete}>
-            <Trash2 />
-            Удалить
+            {cfg.archive ? <CircleX /> : <Trash2 />}
+            {removeLabel(cfg)}
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>

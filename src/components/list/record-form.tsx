@@ -8,10 +8,15 @@ import { rowsStore, useRows } from "@/lib/list/store"
 import type { Field, ListConfig, Row } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
 import { recordHref, useDeleteDialog } from "./actions"
+import { GlassInput } from "@/components/ui/opaline/glass-input"
+import { GlassTextarea } from "@/components/ui/opaline/glass-textarea"
+import { LiquidGlass } from "@/components/ui/opaline/liquid-glass"
+import { DateField } from "./date-field"
+import { FormSelect } from "./select"
 import { Btn, BtnLink } from "./ui"
 
-const control =
-  "h-11 w-full rounded-xl border border-border bg-card px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] focus:border-[#085eff] focus:ring-4 focus:ring-[#085eff]/15 aria-invalid:border-[#ff5257]"
+/** Поля формы — Opaline (GlassInput / GlassTextarea / GlassSelect / GlassDatePicker), одного размера. */
+const glassField = "h-11 rounded-xl px-3.5 text-foreground has-[[aria-invalid=true]]:ring-2 has-[[aria-invalid=true]]:ring-[#ff5257]"
 
 /** Создание (/<раздел>/new) и редактирование (/<раздел>/<id>/edit) записи. */
 export function RecordForm<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id?: number }) {
@@ -98,19 +103,18 @@ export function RecordForm<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id?
           <Group title="Дополнительно">
             <label className="col-span-full flex flex-col gap-1.5 text-[12.5px] text-muted-foreground">
               Комментарий
-              <textarea placeholder="Комментарий к записи" className={cn(control, "h-[90px] resize-y py-3")} />
+              <GlassTextarea placeholder="Комментарий к записи" minRows={3} containerClassName="rounded-xl" className="text-sm text-foreground" />
             </label>
             <label className="col-span-full flex flex-col gap-1.5 text-[12.5px] text-muted-foreground">
               Вложения
               {/* TODO: загрузка файлов через API */}
-              <input
-                type="file"
-                multiple
-                className={cn(
-                  control,
-                  "h-auto cursor-pointer py-3 file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-[#085eff] file:px-3.5 file:py-1.5 file:text-[12.5px] file:font-semibold file:text-white"
-                )}
-              />
+              <LiquidGlass className="flex rounded-xl px-3.5 py-3">
+                <input
+                  type="file"
+                  multiple
+                  className="w-full cursor-pointer text-sm text-foreground file:mr-3 file:cursor-pointer file:rounded-full file:border-0 file:bg-[#085eff] file:px-3.5 file:py-1.5 file:text-[12.5px] file:font-semibold file:text-white"
+                />
+              </LiquidGlass>
             </label>
           </Group>
         </div>
@@ -153,23 +157,19 @@ function FieldInput<T>({ f, value, invalid, onChange }: { f: Field<T>; value: st
         {f.required && <b className="font-semibold text-[#ff5257]"> *</b>}
       </span>
       {f.type === "select" ? (
-        <select value={value} onChange={(e) => onChange(e.target.value)} aria-invalid={invalid} className={cn(control, "kselect cursor-pointer")}>
-          {f.opts?.map((o) => (
-            <option key={o.v} value={o.v}>
-              {o.label}
-            </option>
-          ))}
-        </select>
+        <FormSelect value={value} onChange={onChange} options={f.opts ?? []} invalid={invalid} aria-label={f.t} />
+      ) : f.type === "date" ? (
+        <DateField value={value} onChange={onChange} />
       ) : (
-        <input
-          type={f.type === "number" ? "text" : f.type}
+        <GlassInput
           inputMode={f.type === "number" ? "numeric" : undefined}
           value={value}
           placeholder={f.t}
           autoFocus={f.required}
           aria-invalid={invalid}
           onChange={(e) => onChange(f.type === "number" ? e.target.value.replace(/\D/g, "") : e.target.value)}
-          className={control}
+          className={glassField}
+          inputClassName="text-sm"
         />
       )}
     </label>

@@ -2,12 +2,12 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, ChevronRight, Pencil, Phone, Share2, Trash2, Users } from "lucide-react"
+import { ChevronLeft, ChevronRight, CircleX, Pencil, Phone, Share2, Trash2, Users } from "lucide-react"
 import { toast } from "@/components/shared/toast"
 import { useRows, viewStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
-import { recordHref, shareLink, useDeleteDialog } from "./actions"
+import { recordHref, removeLabel, shareLink, useDeleteDialog } from "./actions"
 import { Fresh } from "./cells"
 import { Btn, BtnLink } from "./ui"
 
@@ -86,9 +86,9 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
               <Pencil />
               Редактировать
             </BtnLink>
-            <Btn className="h-[42px] text-[#ff5257] max-sm:h-[38px]" onClick={() => del.ask([x], () => router.push(`/${cfg.key}`))}>
-              <Trash2 />
-              Удалить
+            <Btn className="h-[42px] text-[#ff5257] max-sm:h-[38px]" onClick={() => del.ask([x], cfg.archive ? undefined : () => router.push(`/${cfg.key}`))}>
+              {cfg.archive ? <CircleX /> : <Trash2 />}
+              {removeLabel(cfg)}
             </Btn>
           </div>
         </div>

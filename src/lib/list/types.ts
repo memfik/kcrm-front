@@ -38,7 +38,7 @@ export type KpiDef = {
   f?: (n: number) => string
 }
 
-export type Action = { icon: LucideIcon; label: string; href?: string; primary?: boolean; onClick?: "export" }
+export type Action = { icon: LucideIcon; label: string; href?: string; primary?: boolean; onClick?: "export" | "import" }
 
 export type Field<T> = {
   k: string
@@ -62,6 +62,17 @@ export type RecordView = {
   tabs: { t: string; fresh?: boolean; body: ReactNode }[]
 }
 
+/** Вместо удаления — «Расторгнуть» с датой и причиной (сделки в kCRM не удаляют). */
+export type Archive<T> = {
+  verb: string
+  /** «сделку» / «сделок» — в заголовке диалога. */
+  one: string
+  many: string
+  note: string
+  reasons: Option[]
+  apply: (x: T, reason: string, date: string) => T
+}
+
 export type ListConfig<T extends Row> = {
   key: string
   title: string
@@ -81,7 +92,14 @@ export type ListConfig<T extends Row> = {
   cols: Column<T>[]
   /** Колонка ответственного — фильтр «Ещё» и блок «Ответственный». */
   owner?: { t: string; get: (x: T) => string; name: (id: string) => string; render: (x: T) => ReactNode }
+  /** Последний месяц с данными, если не общий (см. period.ANCHOR). */
+  anchor?: string
   kpis: (r: string[], rp: string[]) => KpiDef[]
+  /** Вид «Аналитика» рядом со «Списком». */
+  analytics?: { title: string; render: () => ReactNode }
+  archive?: Archive<T>
+  /** Колонка статуса для плашки на карточке (по умолчанию «st»). */
+  cardStatus?: string
   sub: (r: string[], rp: string[], p: Period) => string
   record: (x: T) => RecordView
   fields: Field<T>[]

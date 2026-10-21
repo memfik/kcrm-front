@@ -160,3 +160,36 @@ export function Timeline({ items }: { items: { t: string; p: string; d: string }
     </div>
   )
 }
+
+/** Этап воронки: заливка цветом этапа + расшифровка. */
+export function Stage({ code, text, color, short }: { code: string; text: string; color: string; short?: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+      <span className="inline-flex h-6 items-center rounded-lg px-2.5 text-xs font-bold text-white" style={{ background: color }}>
+        {code}
+      </span>
+      {!short && <span className="text-[12.5px] text-muted-foreground">{text}</span>}
+    </span>
+  )
+}
+
+/** Путь по этапам: пройденные — зелёные, текущий — синий. */
+export function Flow({ steps }: { steps: { code: string; text: string; state: "done" | "on" | "todo" }[] }) {
+  return (
+    <div className="my-1.5 flex flex-wrap gap-2">
+      {steps.map((s) => (
+        <div
+          key={s.code}
+          className={cn(
+            "min-w-[90px] flex-1 rounded-xl bg-[var(--soft)] px-3 py-2.5 text-xs text-muted-foreground",
+            s.state === "on" && "bg-[color-mix(in_srgb,#085eff_14%,var(--card))] text-foreground shadow-[inset_0_0_0_1px_color-mix(in_srgb,#085eff_50%,transparent)]",
+            s.state === "done" && "bg-[color-mix(in_srgb,#34c759_12%,var(--card))]"
+          )}
+        >
+          <b className="block text-[13px] text-foreground">{s.code}</b>
+          {s.text}
+        </div>
+      ))}
+    </div>
+  )
+}

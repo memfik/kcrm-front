@@ -1,7 +1,7 @@
 import { Box, Briefcase, Calendar, Check, Download, FileCheck, FilePlus, FileText, Globe, MapPin, Phone, TrendingUp, Users } from "lucide-react"
 import { DateCell, Dash, Dot, Kv, Line, NameCell, Owner, Pill, Section, Status, Timeline, AVATAR_COLORS, Avatar } from "@/components/list/cells"
 import raw from "@/data/counterparties-demo.json"
-import { CONTACT_NAMES, LAST, STAFF, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
+import { CITY, CONTACT_NAMES, FORM, STAFF, counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
 import { OFFERS } from "@/lib/home-stats"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { delta, fmt, inRange, periodLabel, prevLabel, signed, sumOf } from "@/lib/period"
@@ -30,11 +30,6 @@ export type Counterparty = {
   city: string
 }
 
-const FORM = ["ТОО", "ТОО", "ТОО", "АО", "ИП", "ИП", "ГУ", "КГП"]
-const NM1 = ["Альфа", "Евразия", "Каспий", "Сарыарка", "Алтын", "Нур", "Тенгри", "Жетысу", "Атамекен", "Байтерек", "Кокше", "Ертіс", "Орда", "Казына", "Медеу", "Арман", "Самал", "Сункар", "Дала", "Тулпар"]
-const NM2 = ["Логистик", "Строй Групп", "Агро", "Нефть", "Трейд", "Сервис", "Телеком", "Пласт", "Энерго", "Медикал", "Авто", "Фарм", "Инвест", "Транс", "Девелопмент", "Металл", "Систем", "Ойл", "Кейтеринг", "Секьюрити"]
-const GOV = ["ГУ «Аппарат акима", "КГП «Городская поликлиника №", "ГУ «Отдел образования", "КГУ «Школа-лицей №"]
-const CITY = ["Алматы", "Астана", "Шымкент", "Караганда", "Атырау", "Актобе", "Павлодар", "Усть-Каменогорск", "Костанай", "Актау"]
 const SEG = ["B2B", "B2B", "B2B", "B2G", "B2C", "B2O", "КМГ"]
 const IND = ["Промышленный сектор", "Финансовый сектор", "Строительный сектор", "Коммерческий сектор", "Государственный сектор", "Мобильные операторы РК", "Фиксированные операторы РК", "Иностранный сектор"]
 const CAT: [string, string][] = [["Потенциальный", "#afafe9"], ["Периодический", "#80b3ff"], ["Постоянный", "#87de87"], ["VIP", "#ff80b2"], ["TOP 500", "#ffb340"]]
@@ -47,19 +42,6 @@ const STA: Record<number, [string, string]> = {
   4: ["Неактивный", "#af52de"],
   5: ["Приостановлен", "#ffcc00"],
   6: ["Отказ", "#ff375f"],
-}
-const LETTERS = "АБВГДЕЖЗИКЛМНОПРСТУ"
-
-/** Название — те же, что во всех разделах (сделки, КП, заявки ссылаются на контрагента по ID). */
-export function counterpartyName(id: number) {
-  if (!id) return "— без контрагента —"
-  const f = FORM[rnd(id, 1) % FORM.length]
-  if (f === "ГУ" || f === "КГП") {
-    const g = GOV[rnd(id, 2) % GOV.length]
-    return g.endsWith("№") ? `${g}${(rnd(id, 3) % 60) + 1}»` : `${g} ${CITY[rnd(id, 4) % CITY.length]}»`
-  }
-  if (f === "ИП") return `ИП «${LAST[rnd(id, 5) % LAST.length][0]} ${LETTERS[rnd(id, 15) % 19]}.${LETTERS[rnd(id, 16) % 19]}.»`
-  return `${f} «${NM1[rnd(id, 6) % NM1.length]} ${NM2[rnd(id, 7) % NM2.length]}»`
 }
 const binOf = (id: number) => String((rnd(id, 8) % 90) + 10) + String(rnd(id, 9)).padStart(10, "0").slice(0, 10)
 

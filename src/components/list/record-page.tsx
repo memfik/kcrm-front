@@ -83,7 +83,7 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
               <Share2 />
               Поделиться
             </Btn>
-            {editable(cfg) && (
+            {editable(cfg) && !cfg.locked?.(x) && (
               <BtnLink href={`${recordHref(cfg.key, x.id)}/edit`} className="h-[42px] max-sm:h-[38px]">
                 <Pencil />
                 Редактировать

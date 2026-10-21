@@ -103,11 +103,12 @@ export const Fresh = () => (
 
 /* ---------- блоки карточки ---------- */
 
-export function Section({ title, children }: { title: string; children: React.ReactNode }) {
+export function Section({ title, fresh, children }: { title: string; fresh?: boolean; children: React.ReactNode }) {
   return (
     <div className="mb-3.5 rounded-[22px] border border-border bg-card px-[22px] py-5 max-sm:px-4 max-sm:py-3.5">
       <h4 className="mb-4 flex items-center gap-2.5 text-[15px] font-bold before:size-2 before:rounded-[3px] before:bg-[#085eff] before:shadow-[0_0_0_4px_rgba(8,94,255,0.15)]">
         {title}
+        {fresh && <Fresh />}
       </h4>
       {children}
     </div>

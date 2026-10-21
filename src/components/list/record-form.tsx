@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Check, ChevronLeft, Trash2 } from "lucide-react"
+import { Check, ChevronLeft, Lock, Trash2 } from "lucide-react"
 import { toast } from "@/components/shared/toast"
 import { rowsStore, useRows } from "@/lib/list/store"
 import type { Field, ListConfig, Row } from "@/lib/list/types"
@@ -11,6 +11,7 @@ import { recordHref, useDeleteDialog } from "./actions"
 import { GlassInput } from "@/components/ui/opaline/glass-input"
 import { GlassTextarea } from "@/components/ui/opaline/glass-textarea"
 import { LiquidGlass } from "@/components/ui/opaline/liquid-glass"
+import { Banner } from "./cells"
 import { DateField } from "./date-field"
 import { FormSelect } from "./select"
 import { Btn, BtnLink } from "./ui"
@@ -45,7 +46,9 @@ export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T
       </div>
     )
 
+  const locked = !!current && !!cfg.locked?.(current)
   const save = () => {
+    if (locked) return
     const missing = cfg.fields.find((f) => f.required && !values[f.k]?.trim())
     if (missing) {
       setError(missing.k)
@@ -88,6 +91,12 @@ export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T
         </div>
 
         <div className="px-6 py-[18px] max-sm:px-4">
+          {locked && (
+            <Banner icon={Lock} tone="blue" title="Финальный статус">
+              Поля записи заблокированы для редактирования.
+            </Banner>
+          )}
+          <fieldset disabled={locked} className="contents">
           <Group title="Основное">
             {cfg.fields.map((f) => (
               <FieldInput
@@ -119,6 +128,7 @@ export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T
               </LiquidGlass>
             </label>
           </Group>
+          </fieldset>
         </div>
 
         <div className="flex justify-end gap-2.5 border-t border-border px-6 pt-3.5 pb-5 max-sm:px-4">
@@ -131,7 +141,7 @@ export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T
           <BtnLink href={back} className="h-11">
             Отмена
           </BtnLink>
-          <Btn primary type="submit" className="h-11">
+          <Btn primary type="submit" className="h-11" disabled={locked}>
             <Check />
             {isNew ? "Создать" : "Сохранить"}
           </Btn>

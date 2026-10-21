@@ -128,6 +128,8 @@ export type ListConfig<T extends Row> = {
   /** Пометка в подвале страницы («лиды — пример данных…»). */
   foot?: string
   record: (x: T) => RecordView
+  /** Финальный статус — поля записи заблокированы для редактирования. */
+  locked?: (x: T) => boolean
   /** Без полей — раздел только для просмотра: нет /new, /edit и «Изменить». */
   fields?: Field<T>[]
   blank?: () => T

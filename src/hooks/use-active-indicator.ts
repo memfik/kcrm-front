@@ -2,7 +2,14 @@
 
 import * as React from "react"
 
-type IndicatorRect = { left: number; top: number; width: number; height: number }
+type IndicatorRect = {
+  left: number
+  top: number
+  width: number
+  height: number
+  /** Ширина контейнера на момент замера — чтобы считать `right` без устаревшего offsetWidth. */
+  containerWidth: number
+}
 
 /**
  * Tracks the element matching `selector` inside `containerRef` and returns its
@@ -26,13 +33,15 @@ export function useActiveIndicator(
         top: el.offsetTop,
         width: el.offsetWidth,
         height: el.offsetHeight,
+        containerWidth: container.offsetWidth,
       }
       setRect((prev) =>
         prev &&
         prev.left === next.left &&
         prev.top === next.top &&
         prev.width === next.width &&
-        prev.height === next.height
+        prev.height === next.height &&
+        prev.containerWidth === next.containerWidth
           ? prev
           : next
       )

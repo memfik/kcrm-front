@@ -48,7 +48,6 @@ function GlassSegmented({
     previous.current = rect
   }, [rect])
 
-  const containerWidth = ref.current?.offsetWidth ?? 0
   const fast = "320ms cubic-bezier(0.3, 1.35, 0.6, 1)"
   const slow = "640ms cubic-bezier(0.5, 0, 0.2, 1.12) 60ms"
 
@@ -84,7 +83,8 @@ function GlassSegmented({
                 top: rect.top,
                 height: rect.height,
                 left: rect.left,
-                right: containerWidth - rect.left - rect.width,
+                // ширина контейнера — из того же замера, что и пункт: иначе после смены ширины пузырь вылезает за край
+                right: rect.containerWidth - rect.left - rect.width,
                 transition:
                   direction >= 0
                     ? `right ${fast}, left ${slow}`

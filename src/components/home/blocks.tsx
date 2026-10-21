@@ -13,7 +13,7 @@ import {
   type topManagers,
 } from "@/lib/home-stats"
 import { cn } from "@/lib/utils"
-import { DeltaPill } from "./ui"
+import { DeltaPill } from "@/components/shared/ui"
 
 /* ---------- Лицевые счета ---------- */
 
@@ -45,9 +45,7 @@ export function AccountsDonut() {
         <svg viewBox="0 0 150 150" className="size-[150px] flex-none">
           {ARCS.map((a) => (
             <path key={a.status} d={a.d} fill={ACCOUNT_STATUS[a.status].color}>
-              <title>
-                {ACCOUNT_STATUS[a.status].name}: {fmt(a.count)}
-              </title>
+              <title>{`${ACCOUNT_STATUS[a.status].name}: ${fmt(a.count)}`}</title>
             </path>
           ))}
           <text x={75} y={74} textAnchor="middle" className="fill-foreground text-[17px] font-bold">

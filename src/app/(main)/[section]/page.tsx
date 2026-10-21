@@ -3,8 +3,11 @@ import { notFound } from "next/navigation"
 import { ALL_SECTIONS, NAV_GROUPS, findSection } from "@/config/nav"
 import { PageHero } from "@/components/shared/page-hero"
 
+/** Разделы со своими маршрутами — заглушка их не отдаёт. */
+const OWN_ROUTES = new Set(["counterparties"])
+
 export function generateStaticParams() {
-  return ALL_SECTIONS.map((s) => ({ section: s.slug }))
+  return ALL_SECTIONS.filter((s) => !OWN_ROUTES.has(s.slug)).map((s) => ({ section: s.slug }))
 }
 
 /** Заглушка раздела. Заменять по мере переноса макета (номер = файл в архиве дизайна). */

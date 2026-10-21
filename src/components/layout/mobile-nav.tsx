@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { useTheme } from "next-themes"
 import { Dialog } from "radix-ui"
 import { Briefcase, ChevronDown, ChevronRight, House, List, ListTodo, LogOut, Moon, Search, SlidersHorizontal, Users, X } from "lucide-react"
@@ -10,24 +9,24 @@ import { cn } from "@/lib/utils"
 import { CURRENT_USER } from "@/lib/current-user"
 import { Avatar } from "./header-popovers"
 import { SectionLink, Thumb } from "./mega-menu"
+import { inSection } from "./path-aware"
 
 /** Нижнее меню телефона (≤ 640 px). «Ещё» открывает все разделы. */
-export function TabBar({ onMore }: { onMore: () => void }) {
-  const path = usePathname()
+export function TabBar({ path, onMore }: { path: string | null; onMore: () => void }) {
   const tabs = [
     { href: "/", title: "Главная", icon: House },
     { href: "/counterparties", title: "Клиенты", icon: Users },
     { href: "/deals", title: "Сделки", icon: Briefcase },
     { href: "/tasks", title: "Задачи", icon: ListTodo, count: 4 },
   ]
-  const inTabs = tabs.some((t) => (t.href === "/" ? path === "/" : path.startsWith(t.href)))
+  const inTabs = tabs.some((t) => inSection(path, t.href))
   const item = "relative flex flex-col items-center justify-center gap-[3px] rounded-[18px] text-[10.5px] font-medium text-muted-foreground"
   const on = "bg-[color-mix(in_srgb,#085eff_12%,transparent)] text-[#085eff] dark:text-[#6b9dff]"
 
   return (
     <nav className="fixed inset-x-2.5 bottom-[calc(10px+env(safe-area-inset-bottom,0px))] z-[140] grid h-16 grid-cols-5 rounded-3xl bg-[color-mix(in_srgb,var(--background)_88%,transparent)] p-1.5 shadow-[var(--glass-rim),0_14px_40px_-10px_rgba(0,0,0,0.6)] backdrop-blur-[20px] sm:hidden">
       {tabs.map((t) => {
-        const active = t.href === "/" ? path === "/" : path.startsWith(t.href)
+        const active = inSection(path, t.href)
         return (
           <Link key={t.href} href={t.href} className={cn(item, active && on)}>
             {t.count && (
@@ -40,7 +39,7 @@ export function TabBar({ onMore }: { onMore: () => void }) {
           </Link>
         )
       })}
-      <button type="button" onClick={onMore} className={cn(item, !inTabs && on)}>
+      <button type="button" onClick={onMore} className={cn(item, !!path && !inTabs && on)}>
         <List className="size-[22px]" strokeWidth={1.9} />
         Ещё
       </button>
@@ -50,15 +49,16 @@ export function TabBar({ onMore }: { onMore: () => void }) {
 
 /** Все разделы: на планшете — во весь экран (бургер), на телефоне — шторка снизу («Ещё»). */
 export function MobileNav({
+  path,
   open,
   onOpenChange,
   onSearch,
 }: {
+  path: string | null
   open: boolean
   onOpenChange: (open: boolean) => void
   onSearch: () => void
 }) {
-  const path = usePathname()
   const { resolvedTheme, setTheme } = useTheme()
   const close = () => onOpenChange(false)
   const foot = "flex items-center gap-3 rounded-xl px-2 py-3 text-[15px]"
@@ -106,7 +106,7 @@ export function MobileNav({
           </button>
 
           <div className="flex-1 overflow-auto px-2.5 pt-1 pb-[calc(24px+env(safe-area-inset-bottom,0px))]">
-            <Link href="/" onClick={close} className={cn("flex items-center gap-3 rounded-xl px-2 py-2.5 text-[15px]", path === "/" && "bg-[var(--mg-on)]")}>
+            <Link href="/" onClick={close} className={cn("flex items-center gap-3 rounded-xl px-2 py-2.5 text-[15px]", inSection(path, "/") && "bg-[var(--mg-on)]")}>
               <Thumb icon={House} />
               <span>
                 Главная
@@ -114,7 +114,7 @@ export function MobileNav({
               </span>
             </Link>
             {NAV_GROUPS.map((g) => (
-              <details key={g.key} open={g.sections.some((x) => path.startsWith(`/${x.slug}`))} className="group/d border-b border-[var(--dd-line)]">
+              <details key={g.key} open={g.sections.some((x) => inSection(path, `/${x.slug}`))} className="group/d border-b border-[var(--dd-line)]">
                 <summary className="flex cursor-pointer list-none items-center justify-between px-2 py-4 text-base font-semibold [&::-webkit-details-marker]:hidden">
                   {g.title}
                   <ChevronDown className="size-[18px] opacity-60 transition-transform group-open/d:rotate-180" />

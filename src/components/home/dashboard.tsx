@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { Activity, Briefcase, ChartLine, CircleDollarSign, FileCheck, FilePlus, FileText, Sparkles, Users, type LucideIcon } from "lucide-react"
-import { GlassSegmented, GlassSegmentedItem } from "@/components/ui/opaline/glass-segmented"
+import { PeriodSwitch } from "@/components/shared/period-switch"
 import { CURRENT_USER } from "@/lib/current-user"
 import {
   ACTIVITY,
@@ -26,7 +26,8 @@ import {
 import { cn } from "@/lib/utils"
 import { ACCOUNTS_TOTAL, AccountsDonut, DealsFeed, ManagersList, RecentOffersTable } from "./blocks"
 import { ContractsChart, OffersChart } from "./charts"
-import { Card, CardHead, DeltaPill, Legend } from "./ui"
+import { Kpi } from "@/components/shared/kpi"
+import { Card, CardHead, DeltaPill, Legend } from "@/components/shared/ui"
 
 const QUICK: { href: string; title: string; icon: LucideIcon; primary?: boolean }[] = [
   { href: "/counterparties", title: "Контрагенты", icon: Users, primary: true },
@@ -34,12 +35,6 @@ const QUICK: { href: string; title: string; icon: LucideIcon; primary?: boolean 
   { href: "/offer-builder", title: "Новое КП", icon: FilePlus },
   { href: "/tech-requests", title: "Запросы ТВ и ТР", icon: FileCheck },
   { href: "/sales-plan", title: "План продаж", icon: ChartLine },
-]
-
-const PERIODS: { value: Period; label: string }[] = [
-  { value: "m", label: "Месяц" },
-  { value: "q", label: "Квартал" },
-  { value: "y", label: "Год" },
 ]
 
 /** Главная (макет 02): сводка со сравнением периодов. Данные — демо из копии базы (src/data/home-demo.json). */
@@ -93,25 +88,11 @@ export function HomeDashboard() {
             ))}
           </div>
         </div>
-        <GlassSegmented
-          aria-label="Период"
-          value={period}
-          onValueChange={(v) => setPeriod(v as Period)}
-          className="rise text-foreground [animation-delay:80ms] max-sm:flex max-sm:w-full max-sm:[&>div]:w-full"
-        >
-          {PERIODS.map((p) => (
-            <GlassSegmentedItem
-              key={p.value}
-              value={p.value}
-              label={p.label}
-              className="h-[38px] px-5 text-sm opacity-100 text-muted-foreground data-[state=active]:text-foreground max-sm:flex-1"
-            />
-          ))}
-        </GlassSegmented>
+        <PeriodSwitch value={period} onChange={setPeriod} />
       </section>
 
       <div className="grid grid-cols-4 gap-[18px] px-[34px] max-[1240px]:grid-cols-2 max-sm:gap-2.5 max-sm:px-3">
-        <Kpi i={0} title="КП выставлено" icon={FileText} value={fmt(offers)} d={dOffers} period={period} was={fmt(sumOf(OFFERS, rp))} />
+        <Kpi i={0} title="КП выставлено" icon={FileText} value={fmt(offers)} d={dOffers} caption={`${prevLabel(period)} · было ${fmt(sumOf(OFFERS, rp))}`} />
         <Kpi
           i={1}
           title="Сумма КП"
@@ -123,18 +104,16 @@ export function HomeDashboard() {
             </>
           }
           d={delta(sumOf(SUMS, r), sumOf(SUMS, rp))}
-          period={period}
-          was={`${money(sumOf(SUMS, rp))} ₸`}
+          caption={`${prevLabel(period)} · было ${money(sumOf(SUMS, rp))} ₸`}
         />
-        <Kpi i={2} title="Новые договоры" icon={FileCheck} value={fmt(contracts)} d={dContracts} period={period} was={fmt(contractsPrev)} />
+        <Kpi i={2} title="Новые договоры" icon={FileCheck} value={fmt(contracts)} d={dContracts} caption={`${prevLabel(period)} · было ${fmt(contractsPrev)}`} />
         <Kpi
           i={3}
           title="Активность в ленте"
           icon={Activity}
           value={fmt(sumOf(ACTIVITY, r))}
           d={delta(sumOf(ACTIVITY, r), sumOf(ACTIVITY, rp))}
-          period={period}
-          was={fmt(sumOf(ACTIVITY, rp))}
+          caption={`${prevLabel(period)} · было ${fmt(sumOf(ACTIVITY, rp))}`}
         />
       </div>
 
@@ -198,43 +177,6 @@ export function HomeDashboard() {
           Служба работает
         </span>
       </footer>
-    </div>
-  )
-}
-
-function Kpi({
-  i,
-  title,
-  icon: Icon,
-  value,
-  d,
-  period,
-  was,
-}: {
-  i: number
-  title: string
-  icon: LucideIcon
-  value: React.ReactNode
-  d: ReturnType<typeof delta>
-  period: Period
-  was: string
-}) {
-  return (
-    <div
-      className="kpi rise relative isolate min-w-0 overflow-hidden rounded-[22px] border border-border bg-card px-5 pt-[18px] pb-4 shadow-[var(--panel-shadow)] after:pointer-events-none after:absolute after:-right-10 after:-bottom-10 after:-z-10 after:size-40 after:rounded-full after:bg-[rgba(8,94,255,0.07)] after:blur-[40px] max-sm:rounded-[20px] max-sm:px-3.5 max-sm:pt-3.5 max-sm:pb-3"
-      style={{ animationDelay: `${i * 60}ms` }}
-    >
-      <Icon
-        aria-hidden
-        strokeWidth={1.1}
-        className="pointer-events-none absolute -right-6 -bottom-8 -z-10 size-36 text-[#085eff] opacity-[0.09] dark:text-[#6b9dff] dark:opacity-[0.12]"
-      />
-      <div className="text-[13px] whitespace-nowrap text-muted-foreground">{title}</div>
-      <div className="mt-2 text-[30px] leading-[1.25] font-medium tracking-[-0.6px] whitespace-nowrap tabular-nums max-sm:text-2xl">{value}</div>
-      <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground max-sm:text-[11.5px]">
-        <DeltaPill d={d} />
-        {prevLabel(period)} · было {was}
-      </div>
     </div>
   )
 }

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 import { Bell, ChevronDown, House, Menu, Search, Settings } from "lucide-react"
 import { NAV_GROUPS } from "@/config/nav"
 import { GlassButton } from "@/components/ui/opaline/glass-button"
@@ -14,6 +13,7 @@ import { Avatar, NotificationsPopover, SettingsPopover, UserPopover, usePrefsOnH
 import { Logo } from "./logo"
 import { Kbd, MegaMenu } from "./mega-menu"
 import { MobileNav, TabBar } from "./mobile-nav"
+import { inSection, PathAware } from "./path-aware"
 import { ThemeToggle } from "./theme-toggle"
 
 const round = "size-[46px] text-foreground max-sm:size-10"
@@ -23,7 +23,6 @@ const round = "size-[46px] text-foreground max-sm:size-10"
  * < 1240 px — бургер, ≤ 640 px — нижнее меню. Не липкая, как в макете: стекло не пересчитывается при прокрутке.
  */
 export function Header() {
-  const path = usePathname()
   const [menu, setMenu] = useState<{ key: string; rect: DOMRect } | null>(null)
   const [search, setSearch] = useState(false)
   const [mobile, setMobile] = useState(false)
@@ -56,29 +55,35 @@ export function Header() {
           bezel={10}
           className="hidden min-w-0 gap-1 overflow-x-auto rounded-full p-[5px] [scrollbar-width:none] min-[1240px]:flex"
         >
-          <Link
-            href="/"
-            title="Главная"
-            className={cn(navItem, "px-[13px]", path === "/" && navOn)}
-          >
-            <House className="size-[17px]" />
-          </Link>
-          {NAV_GROUPS.map((g) => {
-            const active = g.sections.some((x) => path === `/${x.slug}` || path.startsWith(`/${x.slug}/`))
-            const open = menu?.key === g.key
-            return (
-              <button
-                key={g.key}
-                type="button"
-                aria-expanded={open}
-                onClick={(e) => setMenu(open ? null : { key: g.key, rect: e.currentTarget.getBoundingClientRect() })}
-                className={cn(navItem, active && navOn, open && !active && "bg-[var(--nav-hover)]")}
-              >
-                {g.title}
-                <ChevronDown className={cn("hidden size-[13px] opacity-55 transition-transform duration-200 min-[1440px]:block", open && "rotate-180")} />
-              </button>
-            )
-          })}
+          <PathAware
+            render={(path) => (
+              <>
+                <Link
+                  href="/"
+                  title="Главная"
+                  className={cn(navItem, "px-[13px]", inSection(path, "/") && navOn)}
+                >
+                  <House className="size-[17px]" />
+                </Link>
+                {NAV_GROUPS.map((g) => {
+                  const active = g.sections.some((x) => inSection(path, `/${x.slug}`))
+                  const open = menu?.key === g.key
+                  return (
+                    <button
+                      key={g.key}
+                      type="button"
+                      aria-expanded={open}
+                      onClick={(e) => setMenu(open ? null : { key: g.key, rect: e.currentTarget.getBoundingClientRect() })}
+                      className={cn(navItem, active && navOn, open && !active && "bg-[var(--nav-hover)]")}
+                    >
+                      {g.title}
+                      <ChevronDown className={cn("hidden size-[13px] opacity-55 transition-transform duration-200 min-[1440px]:block", open && "rotate-180")} />
+                    </button>
+                  )
+                })}
+              </>
+            )}
+          />
         </LiquidGlass>
 
         <div className="ml-auto flex flex-none items-center gap-2.5 max-sm:gap-2">
@@ -135,8 +140,14 @@ export function Header() {
 
       {group && menu && <MegaMenu group={group} anchor={menu.rect} onClose={() => setMenu(null)} onSearch={openSearch} />}
       <CommandMenu open={search} onOpenChange={setSearch} />
-      <MobileNav open={mobile} onOpenChange={setMobile} onSearch={() => setSearch(true)} />
-      <TabBar onMore={() => setMobile(true)} />
+      <PathAware
+        render={(path) => (
+          <>
+            <MobileNav path={path} open={mobile} onOpenChange={setMobile} onSearch={() => setSearch(true)} />
+            <TabBar path={path} onMore={() => setMobile(true)} />
+          </>
+        )}
+      />
     </>
   )
 }

@@ -450,3 +450,84 @@ html.noanim *::after {
 html.compact .kpi {
   padding: 12px 16px;
 }
+/* Списки разделов (макет 03…): строки-«пилюли», закреплённые колонки, плашка-аватар. */
+:root:not(.dark) {
+  --row-s: #f6f8fc;
+  --row-hs: #eef3ff;
+  --row-ss: #e9f0ff;
+}
+.dark {
+  --row-s: #1b1d22;
+  --row-hs: #212328;
+  --row-ss: #152443;
+}
+@layer components {
+.cav {
+  background: #eef3ff;
+  color: #085eff;
+  border: 1px solid rgba(8, 94, 255, 0.12);
+}
+.dark .cav {
+  background: linear-gradient(135deg, #262a32, #16181d);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #6b9dff;
+}
+.ltbl {
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+.ltbl thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--card);
+  padding: 6px 11px;
+  text-align: left;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  user-select: none;
+}
+.ltbl tbody td {
+  background: var(--row-s);
+  padding: 12px 11px;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.ltbl tbody td:first-child { border-radius: 14px 0 0 14px; }
+.ltbl tbody td:last-child { border-radius: 0 14px 14px 0; }
+.ltbl tbody tr:hover td { background: var(--row-hs); }
+.ltbl .sl,
+.ltbl .sr {
+  position: sticky;
+  z-index: 1;
+}
+.ltbl .sl:first-child { left: 0; }
+.ltbl .sr { right: 0; }
+.ltbl thead .sl,
+.ltbl thead .sr { z-index: 3; }
+html.compact .ltbl tbody td {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+@media (max-width: 640px) {
+  .ltbl tbody td,
+  .ltbl thead th { padding: 10px 8px; }
+  .ltbl .sl,
+  .ltbl .sr { position: static; }
+}
+}
+/* Селект форм — своя стрелка, как в макетах. */
+select.kselect {
+  appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238c919b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+select.kselect option {
+  background: var(--card);
+  color: var(--foreground);
+}

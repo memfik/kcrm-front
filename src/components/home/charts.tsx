@@ -13,7 +13,7 @@ import {
   monthShort,
   yearAgo,
 } from "@/lib/home-stats"
-import { DeltaPill } from "./ui"
+import { DeltaPill } from "@/components/shared/ui"
 
 /** Ширина элемента; обновляется не чаще раза в кадр. */
 function useWidth<T extends HTMLElement>(fallback: number) {
@@ -149,9 +149,7 @@ export const ContractsChart = memo(function ContractsChart({ selected }: { selec
           return (
             <g key={k}>
               <rect x={x(j) - bw / 2} y={y(v[j])} width={bw} height={H - pb - y(v[j])} rx={6} fill={on ? GREEN : dim(GREEN, 26)}>
-                <title>
-                  {MON[+k.slice(5) - 1]}: {v[j]} · год назад {py[j]}
-                </title>
+                <title>{`${MON[+k.slice(5) - 1]}: ${v[j]} · год назад ${py[j]}`}</title>
               </rect>
               <text x={x(j)} y={H - 7} textAnchor="middle" className={on ? "fill-foreground! font-semibold" : undefined}>
                 {monthShort(k)}

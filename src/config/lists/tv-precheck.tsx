@@ -152,7 +152,7 @@ function record(x: Precheck) {
     { t: "До узла сети", v: `${fmt(x.node)} м`, s: `${fmt(x.node)} м` },
     { t: "Технология", v: x.tech, s: x.tech },
     { t: "История адреса", v: HIST[x.hist], s: HIST[x.hist] },
-    { t: "Сети СО", v: x.so.join(", ") || "нет", s: x.so.join(", ") || "нет", wide: true },
+    { t: "Сети СО", v: x.so.join(", ") || "нет", s: x.so.join(", ") || "нет" },
   ]
   // плашки — как в макете: числовая колонка, затем короткие (до 26 знаков) поля карточки, кроме совпадающих с заголовком; не больше 4
   const stats = [{ t: "До узла сети (ЕСТУ)", v: `${fmt(x.node)} м`, s: "" }, ...[...found, ...prelim].filter((f) => f.s.length <= 26 && f.s !== x.norm)].slice(0, 4)

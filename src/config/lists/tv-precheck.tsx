@@ -139,6 +139,64 @@ function Tool() {
   )
 }
 
+function record(x: Precheck) {
+  const fix = x.fixed ? "Опечатка в названии улицы — предложен вариант 2ГИС" : "Не требуется"
+  // поля вкладки «Результат»; `s` — текст поля для плашек
+  const found = [
+    { t: "Введено", v: x.src, s: x.src, wide: true },
+    { t: "Нормализовано", v: x.norm, s: x.norm, wide: true },
+    { t: "Исправление", v: fix, s: fix, wide: true },
+  ]
+  const prelim = [
+    { t: "Вывод", v: verdict(x), s: VERDICT[x.v][0] },
+    { t: "До узла сети", v: `${fmt(x.node)} м`, s: `${fmt(x.node)} м` },
+    { t: "Технология", v: x.tech, s: x.tech },
+    { t: "История адреса", v: HIST[x.hist], s: HIST[x.hist] },
+    { t: "Сети СО", v: x.so.join(", ") || "нет", s: x.so.join(", ") || "нет", wide: true },
+  ]
+  // плашки — как в макете: числовая колонка, затем короткие (до 26 знаков) поля карточки, кроме совпадающих с заголовком; не больше 4
+  const stats = [{ t: "До узла сети (ЕСТУ)", v: `${fmt(x.node)} м`, s: "" }, ...[...found, ...prelim].filter((f) => f.s.length <= 26 && f.s !== x.norm)].slice(0, 4)
+  return {
+    title: x.norm,
+    meta: (
+      <>
+        {verdict(x)}
+        <Pill>{x.tech}</Pill>
+      </>
+    ),
+    actions: [
+      { icon: ClipboardCheck, label: "Создать заявку на детальную проверку", href: "/tech-requests/new" },
+      { icon: MapPin, label: "История адреса", href: "/addresses" },
+    ],
+    stats: stats.map(({ t, v }) => ({ t, v })),
+    // «Кратко» — все поля вкладки «Результат», как в макете
+    facts: [...found, ...prelim].map(({ t, v }) => ({ t, v })),
+    tabs: [
+      {
+        t: "Результат",
+        body: (
+          <>
+            <Section title="Распознанный адрес">
+              <Kv items={found} />
+            </Section>
+            <Section title="Предварительная ТВ">
+              <Kv items={prelim} />
+            </Section>
+          </>
+        ),
+      },
+      {
+        t: "Карта",
+        body: (
+          <Section title="Точка и сеть ЕСТУ">
+            <MapBlock id={9000 + x.id} city={x.city} address={x.norm.split(", ").slice(1).join(", ")} label={x.norm} />
+          </Section>
+        ),
+      },
+    ],
+  }
+}
+
 /** Заключение — CSV текущих результатов. TODO: печатная форма заключения. */
 const conclusion = () => {
   const rows = rowsStore.all(TV_PRECHECK)
@@ -205,73 +263,6 @@ export const TV_PRECHECK: ListConfig<Precheck> = {
     "Вставьте адреса или координаты (по одному в строке) или приложите документ — система выделит адреса, сверит их с 2ГИС / Яндекс / Google и даст предварительный ответ по истории адресов и карте сети ЕСТУ.",
   noCards: true,
   noDelete: true,
-  record: (x) => ({
-    title: x.norm,
-    meta: (
-      <>
-        {verdict(x)}
-        <Pill>{x.tech}</Pill>
-      </>
-    ),
-    actions: [
-      { icon: ClipboardCheck, label: "Создать заявку на детальную проверку", href: "/tech-requests/new" },
-      { icon: MapPin, label: "История адреса", href: "/addresses" },
-    ],
-    // как в макете: плашки — числовая колонка, затем короткие поля карточки (до 4); «Кратко» — все поля вкладки «Результат»
-    stats: [
-      { t: "До узла сети (ЕСТУ)", v: `${fmt(x.node)} м` },
-      ...(x.src.length <= 26 ? [{ t: "Введено", v: x.src }] : []),
-      ...(x.fixed ? [] : [{ t: "Исправление", v: "Не требуется" }]),
-      { t: "Вывод", v: VERDICT[x.v][0] },
-      { t: "Технология", v: x.tech },
-    ].slice(0, 4),
-    facts: [
-      { t: "Введено", v: x.src },
-      { t: "Нормализовано", v: x.norm },
-      { t: "Исправление", v: x.fixed ? "Опечатка в названии улицы — предложен вариант 2ГИС" : "Не требуется" },
-      { t: "Вывод", v: verdict(x) },
-      { t: "До узла сети", v: `${fmt(x.node)} м` },
-      { t: "Технология", v: x.tech },
-      { t: "История адреса", v: HIST[x.hist] },
-      { t: "Сети СО", v: x.so.join(", ") || "нет" },
-    ],
-    tabs: [
-      {
-        t: "Результат",
-        body: (
-          <>
-            <Section title="Распознанный адрес">
-              <Kv
-                items={[
-                  { t: "Введено", v: x.src, wide: true },
-                  { t: "Нормализовано", v: x.norm, wide: true },
-                  { t: "Исправление", v: x.fixed ? "Опечатка в названии улицы — предложен вариант 2ГИС" : "Не требуется", wide: true },
-                ]}
-              />
-            </Section>
-            <Section title="Предварительная ТВ">
-              <Kv
-                items={[
-                  { t: "Вывод", v: verdict(x) },
-                  { t: "До узла сети", v: `${fmt(x.node)} м` },
-                  { t: "Технология", v: x.tech },
-                  { t: "История адреса", v: HIST[x.hist] },
-                  { t: "Сети СО", v: x.so.join(", ") || "нет", wide: true },
-                ]}
-              />
-            </Section>
-          </>
-        ),
-      },
-      {
-        t: "Карта",
-        body: (
-          <Section title="Точка и сеть ЕСТУ">
-            <MapBlock id={9000 + x.id} city={x.city} address={x.norm.split(", ").slice(1).join(", ")} label={x.norm} />
-          </Section>
-        ),
-      },
-    ],
-  }),
+  record,
   name: (x) => x.norm,
 }

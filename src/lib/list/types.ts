@@ -47,6 +47,8 @@ export type Action = {
   onClick?: "export" | "import" | "bulk"
   /** Действие карточки, меняющее запись (решение, статус): возвращает новую версию. */
   apply?: () => Row
+  /** Действие карточки с побочным эффектом (перенос в другой раздел); может вернуть адрес для перехода. */
+  run?: () => string | void
 }
 
 export type Field<T> = {
@@ -107,14 +109,15 @@ export type ListConfig<T extends Row> = {
   /** Вид «Аналитика» рядом со «Списком». */
   analytics?: { title: string; render: (ctx: { r: string[]; p: Period }) => ReactNode }
   archive?: Archive<T>
-  /** Массовое действие над выбранными — для кнопки с onClick: "bulk" («Согласовать выбранные»). */
-  bulk?: { done: string; apply: (x: T) => T }
+  /** Массовое действие над выбранными — для кнопки с onClick: "bulk». Возвращает отмену. */
+  bulk?: { done: string; run: (rows: T[]) => () => void }
   /** Колонка статуса для плашки на карточке (по умолчанию «st»). */
   cardStatus?: string
   sub: (r: string[], rp: string[], p: Period) => string
   record: (x: T) => RecordView
-  fields: Field<T>[]
-  blank: () => T
+  /** Без полей — раздел только для просмотра: нет /new, /edit и «Изменить». */
+  fields?: Field<T>[]
+  blank?: () => T
   /** Название записи (заголовок, тосты, «Удалить …?»). */
   name: (x: T) => string
 }

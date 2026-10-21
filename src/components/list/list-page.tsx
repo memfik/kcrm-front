@@ -8,11 +8,11 @@ import { Kpi } from "@/components/shared/kpi"
 import { PeriodSwitch } from "@/components/shared/period-switch"
 import { toast } from "@/components/shared/toast"
 import { applyQuery, emptyQuery, exportCsv, type Query } from "@/lib/list/query"
-import { rowsStore, useRows, viewStore } from "@/lib/list/store"
+import { useRows, viewStore } from "@/lib/list/store"
 import type { Action, ListConfig, Row } from "@/lib/list/types"
 import { delta, fmt, prevLabel, range, type Period } from "@/lib/period"
 import { cn } from "@/lib/utils"
-import { recordHref, removeLabel, RowMenu, useDeleteDialog } from "./actions"
+import { editable, recordHref, removeLabel, RowMenu, useDeleteDialog } from "./actions"
 import { ActiveChips, FilterChip, MoreButton, MoreFilters } from "./filters"
 import { Btn, roundAction } from "./ui"
 
@@ -73,9 +73,9 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
     if (a.onClick === "bulk" && cfg.bulk) {
       const target = rows.filter((x) => checked.has(x.id))
       if (!target.length) return toast("Отметьте записи в списке")
-      target.forEach((x) => rowsStore.save(cfg, cfg.bulk!.apply(x)))
+      const undo = cfg.bulk.run(target)
       setChecked(new Set())
-      toast(`${cfg.bulk.done}: ${target.length}`, () => target.forEach((x) => rowsStore.save(cfg, x)))
+      toast(`${cfg.bulk.done}: ${target.length}`, undo)
     }
   }
   const Icon = cfg.icon
@@ -268,9 +268,11 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
                           <Link href={recordHref(cfg.key, x.id)} className={roundAction} title="Открыть">
                             <Eye />
                           </Link>
-                          <Link href={`${recordHref(cfg.key, x.id)}/edit`} className={roundAction} title="Изменить">
-                            <Pencil />
-                          </Link>
+                          {editable(cfg) && (
+                            <Link href={`${recordHref(cfg.key, x.id)}/edit`} className={roundAction} title="Изменить">
+                              <Pencil />
+                            </Link>
+                          )}
                           <RowMenu cfg={cfg} row={x} onDelete={() => del.ask([x])} />
                         </div>
                       </td>
@@ -505,9 +507,11 @@ function Cards<T extends Row>({
                 </>
               )}
               <div className="mt-3.5 flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
-                <Link href={`${recordHref(cfg.key, x.id)}/edit`} className={roundAction} title="Изменить">
-                  <Pencil />
-                </Link>
+                {editable(cfg) && (
+                  <Link href={`${recordHref(cfg.key, x.id)}/edit`} className={roundAction} title="Изменить">
+                    <Pencil />
+                  </Link>
+                )}
                 <button type="button" className={cn(roundAction, "hover:border-[#ff3b30] hover:bg-[#ff3b30]")} title={removeLabel(cfg)} onClick={() => onDelete(x)}>
                   {cfg.archive ? <CircleX /> : <Trash2 />}
                 </button>

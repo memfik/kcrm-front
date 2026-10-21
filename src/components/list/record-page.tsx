@@ -7,7 +7,7 @@ import { toast } from "@/components/shared/toast"
 import { rowsStore, useRows, viewStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
-import { recordHref, removeLabel, shareLink, useDeleteDialog } from "./actions"
+import { editable, recordHref, removeLabel, shareLink, useDeleteDialog } from "./actions"
 import { Fresh } from "./cells"
 import { Btn, BtnLink } from "./ui"
 
@@ -82,10 +82,12 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
               <Share2 />
               Поделиться
             </Btn>
-            <BtnLink href={`${recordHref(cfg.key, x.id)}/edit`} className="h-[42px] max-sm:h-[38px]">
-              <Pencil />
-              Редактировать
-            </BtnLink>
+            {editable(cfg) && (
+              <BtnLink href={`${recordHref(cfg.key, x.id)}/edit`} className="h-[42px] max-sm:h-[38px]">
+                <Pencil />
+                Редактировать
+              </BtnLink>
+            )}
             <Btn className="h-[42px] text-[#ff5257] max-sm:h-[38px]" onClick={() => del.ask([x], cfg.archive ? undefined : () => router.push(`/${cfg.key}`))}>
               {cfg.archive ? <CircleX /> : <Trash2 />}
               {removeLabel(cfg)}
@@ -105,6 +107,11 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
                 key={a.label}
                 primary={i === 0}
                 onClick={() => {
+                  if (a.run) {
+                    const href = a.run()
+                    if (href) router.push(href)
+                    return
+                  }
                   if (!a.apply) return toast(`«${a.label}» — раздел в работе`)
                   rowsStore.save(cfg, a.apply() as T)
                   toast(`«${a.label}» — ${v.title}`, () => rowsStore.save(cfg, x))

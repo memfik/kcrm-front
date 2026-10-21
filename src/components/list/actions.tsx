@@ -13,6 +13,9 @@ import { Btn, roundAction } from "./ui"
 
 export const recordHref = (key: string, id: number) => `/${key}/${id}`
 
+/** У раздела есть форма (/new, /<id>/edit). */
+export const editable = <T extends Row>(cfg: ListConfig<T>) => !!cfg.fields?.length && !!cfg.blank
+
 export async function shareLink<T extends Row>(cfg: ListConfig<T>, x: T) {
   const url = `${location.origin}${recordHref(cfg.key, x.id)}`
   try {
@@ -153,26 +156,30 @@ export function RowMenu<T extends Row>({ cfg, row, onDelete }: { cfg: ListConfig
               Открыть
             </Link>
           </DropdownMenu.Item>
-          <DropdownMenu.Item asChild className={item}>
-            <Link href={`${recordHref(cfg.key, row.id)}/edit`}>
-              <Pencil />
-              Изменить
-            </Link>
-          </DropdownMenu.Item>
+          {editable(cfg) && (
+            <DropdownMenu.Item asChild className={item}>
+              <Link href={`${recordHref(cfg.key, row.id)}/edit`}>
+                <Pencil />
+                Изменить
+              </Link>
+            </DropdownMenu.Item>
+          )}
           <DropdownMenu.Item className={item} onSelect={() => shareLink(cfg, row)}>
             <Share2 />
             Поделиться ссылкой
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            className={item}
-            onSelect={() => {
-              rowsStore.duplicate(cfg, row)
-              toast("Копия создана")
-            }}
-          >
-            <Copy />
-            Дублировать
-          </DropdownMenu.Item>
+          {editable(cfg) && (
+            <DropdownMenu.Item
+              className={item}
+              onSelect={() => {
+                rowsStore.duplicate(cfg, row)
+                toast("Копия создана")
+              }}
+            >
+              <Copy />
+              Дублировать
+            </DropdownMenu.Item>
+          )}
           <DropdownMenu.Item className={`${item} text-[#ff5257]`} onSelect={onDelete}>
             {cfg.archive ? <CircleX /> : <Trash2 />}
             {removeLabel(cfg)}

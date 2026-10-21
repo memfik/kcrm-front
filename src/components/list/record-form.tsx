@@ -19,7 +19,9 @@ import { Btn, BtnLink } from "./ui"
 const glassField = "h-11 rounded-xl px-3.5 text-foreground has-[[aria-invalid=true]]:ring-2 has-[[aria-invalid=true]]:ring-[#ff5257]"
 
 /** Создание (/<раздел>/new) и редактирование (/<раздел>/<id>/edit) записи. */
-export function RecordForm<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id?: number }) {
+export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T>; id?: number }) {
+  // форму отдают только разделам с полями (см. editable)
+  const cfg = full as ListConfig<T> & Required<Pick<ListConfig<T>, "fields" | "blank">>
   const router = useRouter()
   const rows = useRows(cfg)
   const current = id !== undefined ? rows.find((r) => r.id === id) : undefined

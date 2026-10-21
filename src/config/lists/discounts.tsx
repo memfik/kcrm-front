@@ -4,6 +4,7 @@ import { DateCell, NameCell, Owner, Section, Status, Timeline } from "@/componen
 import raw from "@/data/discounts-demo.json"
 import prices from "@/data/offers-demo.json"
 import { counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
+import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { fmt, inRange, money } from "@/lib/period"
 
@@ -211,7 +212,13 @@ export const DISCOUNTS: ListConfig<Discount> = {
     },
   ],
   sub: () => "Очередь согласования скидок в КП. Решение принимает согласующий (флаг coapp).",
-  bulk: { done: "Согласовано", apply: (x) => ({ ...x, state: "ok" }) },
+  bulk: {
+    done: "Согласовано",
+    run: (rows) => {
+      rows.forEach((x) => rowsStore.save(DISCOUNTS, { ...x, state: "ok" as State }))
+      return () => rows.forEach((x) => rowsStore.save(DISCOUNTS, x))
+    },
+  },
   cardStatus: "state",
   record,
   name: (x) => `Запрос скидки · КП № ${x.id}`,

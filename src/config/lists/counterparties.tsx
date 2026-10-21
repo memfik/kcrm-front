@@ -67,7 +67,7 @@ const ALL: Counterparty[] = raw.map(([id, uid, kp, last, ct, dl, s, cc]) => {
 })
 
 /** «Мои» — TODO: текущий пользователь из сессии; в макете — владелец первой записи. */
-const ME = raw[0][1]
+export const ME = raw[0][1]
 
 const opts = (list: string[]): Option[] => [...new Set(list)].map((v) => ({ v, label: v }))
 const statusOpts: Option[] = Object.entries(STA).map(([v, [label, color]]) => ({ v, label, color }))

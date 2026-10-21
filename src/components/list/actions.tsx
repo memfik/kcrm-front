@@ -7,6 +7,7 @@ import { Check, CircleX, Copy, Ellipsis, Eye, Pencil, Share2, Trash2, Users } fr
 import { toast } from "@/components/shared/toast"
 import { GlassTextarea } from "@/components/ui/opaline/glass-textarea"
 import { ownerColor, pick, STAFF } from "@/lib/demo-names"
+import { openForm } from "@/lib/list/form-store"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
@@ -161,11 +162,9 @@ export function RowMenu<T extends Row>({ cfg, row, onDelete }: { cfg: ListConfig
             </Link>
           </DropdownMenu.Item>
           {editable(cfg) && (
-            <DropdownMenu.Item asChild className={item}>
-              <Link href={`${recordHref(cfg.key, row.id)}/edit`}>
-                <Pencil />
-                Изменить
-              </Link>
+            <DropdownMenu.Item className={item} onSelect={() => openForm(cfg.key, row.id)}>
+              <Pencil />
+              Изменить
             </DropdownMenu.Item>
           )}
           <DropdownMenu.Item className={item} onSelect={() => shareLink(cfg, row)}>

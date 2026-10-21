@@ -1,16 +1,15 @@
 "use client"
 
 import { useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { Command } from "cmdk"
 import { Dialog } from "radix-ui"
 import { CornerDownLeft, House, Search } from "lucide-react"
+import { useGo } from "@/components/list/smart-link"
 import { NAV_GROUPS } from "@/config/nav"
 import { Kbd, Thumb } from "./mega-menu"
 
 /** Поиск ⌘K: все разделы и быстрые действия из меню. TODO: поиск по контрагентам, БИН и ID через API. */
 export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const router = useRouter()
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -23,9 +22,10 @@ export function CommandMenu({ open, onOpenChange }: { open: boolean; onOpenChang
     return () => removeEventListener("keydown", onKey)
   }, [open, onOpenChange])
 
+  const goTo = useGo()
   const go = (href: string) => {
     onOpenChange(false)
-    router.push(href)
+    goTo(href)
   }
 
   return (

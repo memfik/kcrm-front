@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { SmartLink } from "@/components/list/smart-link"
 import type { NavGroup, Section } from "@/config/nav"
 import { cn } from "@/lib/utils"
 
@@ -161,7 +162,7 @@ function MenuLink({
   children?: React.ReactNode
 }) {
   return (
-    <Link
+    <SmartLink
       href={href}
       role="menuitem"
       onClick={onClick}
@@ -179,7 +180,7 @@ function MenuLink({
           children ? "ml-2" : "ml-auto"
         )}
       />
-    </Link>
+    </SmartLink>
   )
 }
 

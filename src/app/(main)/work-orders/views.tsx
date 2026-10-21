@@ -1,7 +1,6 @@
 "use client"
 
 import { ListPage } from "@/components/list/list-page"
-import { RecordForm } from "@/components/list/record-form"
 import { RecordPage } from "@/components/list/record-page"
 import { WORK_ORDERS } from "@/config/lists/work-orders"
 
@@ -9,4 +8,3 @@ import { WORK_ORDERS } from "@/config/lists/work-orders"
 
 export const List = () => <ListPage cfg={WORK_ORDERS} />
 export const Record = ({ id }: { id: number }) => <RecordPage cfg={WORK_ORDERS} id={id} />
-export const Form = ({ id }: { id?: number }) => <RecordForm cfg={WORK_ORDERS} id={id} />

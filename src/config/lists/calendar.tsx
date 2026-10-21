@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { Bell, Calendar, CalendarDays, ChevronLeft, ChevronRight, CircleCheck, Clock, FilePlus, Users } from "lucide-react"
 import { DateCell, Kv, NameCell, Owner, Section, Status } from "@/components/list/cells"
+import { SmartLink } from "@/components/list/smart-link"
 import raw from "@/data/tasks-demo.json"
 import { counterpartyName, managerName, ownerColor, pick, STAFF } from "@/lib/demo-names"
 import type { ListConfig, Option } from "@/lib/list/types"
@@ -112,9 +113,9 @@ function MonthGrid({ rows, jump }: { rows: CalendarEvent[]; jump: number }) {
                 today && "shadow-[inset_0_0_0_2px_#085eff]"
               )}
             >
-              <Link href="/calendar/new" className="text-[13px] font-bold" title="Новое событие">
+              <SmartLink href="/calendar/new" className="text-[13px] font-bold" title="Новое событие">
                 {d}
-              </Link>
+              </SmartLink>
               {list.slice(0, 3).map((x) => (
                 <Link
                   key={x.id}

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useTheme } from "next-themes"
 import { Dialog } from "radix-ui"
 import { Briefcase, ChevronDown, ChevronRight, House, List, ListTodo, LogOut, Moon, Search, SlidersHorizontal, Users, X } from "lucide-react"
+import { SmartLink } from "@/components/list/smart-link"
 import { NAV_GROUPS } from "@/config/nav"
 import { cn } from "@/lib/utils"
 import { CURRENT_USER } from "@/lib/current-user"
@@ -124,13 +125,13 @@ export function MobileNav({
                 ))}
                 <div className="mx-2 mt-2 mb-1 text-[11.5px] font-semibold tracking-[1px] text-[var(--mg-dim)] uppercase">Быстрые действия</div>
                 {g.quick.map((x) => (
-                  <Link key={x.title} href={x.href} onClick={close} className="flex items-center gap-3 rounded-xl px-2 py-2.5 text-[15px]">
+                  <SmartLink key={x.title} href={x.href} onClick={close} className="flex items-center gap-3 rounded-xl px-2 py-2.5 text-[15px]">
                     <Thumb icon={x.icon} />
                     <span>
                       {x.title}
                       <span className="block text-xs text-muted-foreground">{x.hint}</span>
                     </span>
-                  </Link>
+                  </SmartLink>
                 ))}
               </details>
             ))}

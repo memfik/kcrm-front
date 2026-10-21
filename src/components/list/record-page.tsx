@@ -4,11 +4,13 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ChevronLeft, ChevronRight, CircleX, Pencil, Phone, Share2, Trash2, Users } from "lucide-react"
 import { toast } from "@/components/shared/toast"
+import { openForm, useOpenForm } from "@/lib/list/form-store"
 import { rowsStore, useRows, viewStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
 import { cn } from "@/lib/utils"
 import { editable, recordHref, removeLabel, shareLink, useDelegateDialog, useDeleteDialog } from "./actions"
 import { Fresh } from "./cells"
+import { RecordForm } from "./record-form"
 import { Btn, BtnLink } from "./ui"
 
 /** Карточка записи отдельной страницей: /<раздел>/<id>. */
@@ -19,6 +21,7 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
   const [tab, setTab] = useState(0)
   const del = useDeleteDialog(cfg)
   const pass = useDelegateDialog(cfg)
+  const form = useOpenForm(cfg.key)
 
   if (!x)
     return (
@@ -84,10 +87,10 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
               Поделиться
             </Btn>
             {editable(cfg) && !cfg.locked?.(x) && (
-              <BtnLink href={`${recordHref(cfg.key, x.id)}/edit`} className="h-[42px] max-sm:h-[38px]">
+              <Btn className="h-[42px] max-sm:h-[38px]" onClick={() => openForm(cfg.key, x.id)}>
                 <Pencil />
                 Редактировать
-              </BtnLink>
+              </Btn>
             )}
             {!cfg.noDelete && (
               <Btn className="h-[42px] text-[#ff5257] max-sm:h-[38px]" onClick={() => del.ask([x], cfg.archive ? undefined : () => router.push(`/${cfg.key}`))}>
@@ -191,6 +194,7 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
         </aside>
       </div>
       {del.dialog}
+      {form && <RecordForm key={form.id ?? "new"} cfg={cfg} id={form.id} />}
       {pass.dialog}
     </div>
   )

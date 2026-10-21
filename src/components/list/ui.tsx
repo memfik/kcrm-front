@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { SmartLink } from "./smart-link"
 import { cn } from "@/lib/utils"
 
 /* Кнопки списков и карточек — как .btn в макетах. Непрозрачные: стекло только в шапке. */
@@ -20,8 +20,9 @@ export function Btn({ primary, red, danger, className, type = "button", ...props
   return <button type={type} className={cls({ primary, red, danger }, className)} {...props} />
 }
 
-export function BtnLink({ primary, red, danger, className, ...props }: React.ComponentProps<typeof Link> & BtnProps) {
-  return <Link className={cls({ primary, red, danger }, className)} {...props} />
+/** Кнопка-ссылка; адреса форм («/deals/new») открывают панель формы — см. SmartLink. */
+export function BtnLink({ primary, red, danger, className, ...props }: React.ComponentProps<typeof SmartLink> & BtnProps) {
+  return <SmartLink className={cls({ primary, red, danger }, className)} {...props} />
 }
 
 /** Круглая кнопка действия в строке таблицы / карточке. */

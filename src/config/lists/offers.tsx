@@ -11,7 +11,7 @@ import { fmt, money, periodLabel, prevLabel, sumOf } from "@/lib/period"
 /*
  * 05 Коммерческие предложения. Строки — последние 600 КП из копии базы kCRM;
  * позиции — из прейскуранта копии базы. TODO: API.
- * TODO: создание и правка КП — в Конструкторе КП (макет 28): /offers/new → /offer-builder, «Редактировать» → /offer-builder?kp=<id>.
+ * TODO: правка КП — в Конструкторе КП (макет 28): «Редактировать» → /offer-builder?kp=<id>, а не форма (сумма и позиции считаются там).
  */
 
 export type Offer = {

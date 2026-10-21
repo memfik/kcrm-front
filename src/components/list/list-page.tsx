@@ -8,6 +8,7 @@ import { Kpi } from "@/components/shared/kpi"
 import { PeriodSwitch } from "@/components/shared/period-switch"
 import { toast } from "@/components/shared/toast"
 import { applyQuery, emptyQuery, exportCsv, type Query } from "@/lib/list/query"
+import { openForm, useOpenForm } from "@/lib/list/form-store"
 import { useRows, viewStore } from "@/lib/list/store"
 import type { Action, ListConfig, Row } from "@/lib/list/types"
 import { delta, fmt, prevLabel, range, type Period } from "@/lib/period"
@@ -15,6 +16,8 @@ import { cn } from "@/lib/utils"
 import { editable, recordHref, removeLabel, RowMenu, useDeleteDialog } from "./actions"
 import { Fresh } from "./cells"
 import { ActiveChips, FilterChip, MoreButton, MoreFilters } from "./filters"
+import { RecordForm } from "./record-form"
+import { SmartLink } from "./smart-link"
 import { Btn, roundAction } from "./ui"
 
 const PAGE_SIZE = 20
@@ -35,6 +38,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   const [tabView, setTabView] = useSectionView(cfg.key, !!cfg.analytics, !!cfg.analytics?.first)
   const [jump, setJump] = useState(0)
   const del = useDeleteDialog(cfg)
+  const form = useOpenForm(cfg.key)
 
   const setQ = (next: Query) => {
     setQState(next)
@@ -279,9 +283,9 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
                             <Eye />
                           </Link>
                           {editable(cfg) && (
-                            <Link href={`${recordHref(cfg.key, x.id)}/edit`} className={roundAction} title="Изменить">
+                            <button type="button" onClick={() => openForm(cfg.key, x.id)} className={roundAction} title="Изменить">
                               <Pencil />
-                            </Link>
+                            </button>
                           )}
                           <RowMenu cfg={cfg} row={x} onDelete={() => del.ask([x])} />
                         </div>
@@ -322,6 +326,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
         toast(`Фильтры применены · ${applyQuery(cfg, rows, next).length} записей`)
       }} />
       {del.dialog}
+      {form && <RecordForm key={form.id ?? "new"} cfg={cfg} id={form.id} />}
     </div>
   )
 }
@@ -355,9 +360,9 @@ function QuickButton({ a, primary, onClick }: { a: Action; primary: boolean; onC
     </>
   )
   return a.href ? (
-    <Link href={a.href} className={cls}>
+    <SmartLink href={a.href} className={cls}>
       {inner}
-    </Link>
+    </SmartLink>
   ) : (
     <button type="button" onClick={onClick} className={cls}>
       {inner}
@@ -526,9 +531,9 @@ function Cards<T extends Row>({
               )}
               <div className="mt-3.5 flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                 {editable(cfg) && (
-                  <Link href={`${recordHref(cfg.key, x.id)}/edit`} className={roundAction} title="Изменить">
+                  <button type="button" onClick={() => openForm(cfg.key, x.id)} className={roundAction} title="Изменить">
                     <Pencil />
-                  </Link>
+                  </button>
                 )}
                 {!cfg.noDelete && (
                   <button type="button" className={cn(roundAction, "hover:border-[#ff3b30] hover:bg-[#ff3b30]")} title={removeLabel(cfg)} onClick={() => onDelete(x)}>

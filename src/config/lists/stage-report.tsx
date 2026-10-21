@@ -132,7 +132,11 @@ export const STAGE_REPORT: ListConfig<StageRow> = {
       { t: "Конверсия от старта", v: `${conv(x)}%` },
       { t: "Сумма", v: money(x.sum) },
     ],
-    facts: [],
+    facts: [
+      { t: "Дошли до этапа", v: x.reach },
+      { t: "Ср. время на этапе", v: `${x.days} дн` },
+      { t: "Доля в воронке", v: `${Math.round((x.n / Math.max(1, TOTAL)) * 100)}%` },
+    ],
     tabs: [
       {
         t: "Этап",

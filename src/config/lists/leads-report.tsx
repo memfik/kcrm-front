@@ -122,7 +122,12 @@ export const LEADS_REPORT: ListConfig<LeadRow> = {
       { t: "Выиграно", v: x.w },
       { t: "Конверсия", v: `${conv(x)}%` },
     ],
-    facts: [],
+    facts: [
+      { t: "Главный источник", v: x.src },
+      { t: "Взято в работу", v: x.p },
+      { t: "Сделок", v: x.d },
+      { t: "Сумма", v: money(x.sum) },
+    ],
     tabs: [
       {
         t: "Воронка",

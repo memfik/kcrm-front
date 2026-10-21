@@ -222,7 +222,12 @@ export const TV_PRECHECK: ListConfig<Precheck> = {
       { t: "До узла сети", v: `${fmt(x.node)} м` },
       { t: "Технология", v: x.tech },
     ],
-    facts: [],
+    facts: [
+      { t: "Город", v: x.city },
+      { t: "История адреса", v: HIST[x.hist] },
+      { t: "Сети СО", v: x.so.join(", ") || "нет" },
+      { t: "Введено", v: x.src },
+    ],
     tabs: [
       {
         t: "Результат",

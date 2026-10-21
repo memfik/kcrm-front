@@ -109,7 +109,12 @@ export const REQUESTS_REPORT: ListConfig<BranchRow> = {
       { t: "Отработано", v: `${pct(x)}%` },
       { t: "Нарядов", v: x.wo },
     ],
-    facts: [],
+    facts: [
+      { t: "Ответственный", v: managerName(x.u) },
+      { t: "Нарядов выполнено", v: `${x.wd} из ${x.wo}` },
+      { t: "Без акта", v: x.na || "—" },
+      { t: "Средний срок", v: days(x) },
+    ],
     tabs: [
       {
         t: "Показатели",

@@ -52,6 +52,10 @@ export const rowsStore = {
     const i = s.rows.findIndex((x) => x.id === row.id)
     commit(s, i < 0 ? [row, ...s.rows] : s.rows.map((x) => (x.id === row.id ? row : x)))
   },
+  /** Заменяет все записи раздела (результат новой проверки). */
+  replace<T extends Row>(cfg: ListConfig<T>, rows: T[]) {
+    commit(slot(cfg), rows)
+  },
   /** Удаляет и возвращает функцию отмены. */
   remove<T extends Row>(cfg: ListConfig<T>, ids: number[]) {
     const s = slot(cfg)

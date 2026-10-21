@@ -58,7 +58,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   const tabCounts = useMemo(() => Object.fromEntries((cfg.tabs ?? []).map((t) => [t.k, rows.filter(t.f).length])), [cfg, rows])
   const r = range(period, 0, cfg.anchor)
   const rp = range(period, 1, cfg.anchor)
-  const kpis = useMemo(() => cfg.kpis(range(period, 0, cfg.anchor), range(period, 1, cfg.anchor)), [cfg, period])
+  const kpis = useMemo(() => cfg.kpis(range(period, 0, cfg.anchor), range(period, 1, cfg.anchor), rows), [cfg, period, rows])
 
   const href = (x: T) => cfg.rowHref?.(x) ?? recordHref(cfg.key, x.id)
   const open = (x: T) => router.push(href(x))
@@ -70,6 +70,11 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   }
   const allOnPage = view.length > 0 && view.every((x) => checked.has(x.id))
   const action = (a: Action) => {
+    if (a.run) {
+      const to = a.run()
+      if (to) router.push(to)
+      return
+    }
     if (!a.onClick) return toast(`«${a.label}» — после подключения API`)
     if (a.onClick === "analytics") {
       setTabView("ana")
@@ -146,6 +151,7 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
       </div>
 
       <div className="px-[34px] pb-10 max-sm:px-3 max-sm:pb-7">
+        {cfg.top && <div className="mt-[18px]">{cfg.top()}</div>}
         <div className="mt-[18px] flex flex-wrap items-center gap-2.5 max-sm:gap-2">
           {cfg.analytics && (
             <div className="flex gap-1 rounded-full border border-border bg-card p-1">

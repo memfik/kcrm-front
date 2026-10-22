@@ -12,8 +12,13 @@ export const metadata: Metadata = { title: "Страница не найдена
 export default function NotFound() {
   return (
     <>
+      <div className="nf-bg" aria-hidden>
+        <i />
+        <i />
+        <i />
+      </div>
       <Header />
-      <main className="flex-1 overflow-x-clip pb-16 max-sm:pb-[calc(90px+env(safe-area-inset-bottom,0px))]">
+      <main className="relative z-[1] flex-1 overflow-x-clip pb-16 max-sm:pb-[calc(90px+env(safe-area-inset-bottom,0px))]">
         <section className="page rise pt-16 pb-10 text-center max-sm:pt-10">
           <p className="nf-float text-[96px] leading-none font-bold tracking-tight text-[#085eff] tabular-nums max-sm:text-[72px]">404</p>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight max-sm:text-2xl">Страница не найдена</h1>

@@ -3,7 +3,7 @@ import { Banner, DateCell, Flow, Kv, Line, NameCell, Owner, Pill, Section, Statu
 import { toast } from "@/components/shared/toast"
 import requests from "@/data/tech-requests-demo.json"
 import { CITY, counterpartyName, fixClient, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
-import { BRANCHES, shiftDate, STREETS, TODAY, WORKS } from "@/lib/dippp"
+import { BRANCHES, shiftDate, STREETS, TODAY } from "@/lib/dippp"
 import { briefFacts, briefStats, type BriefItem } from "@/lib/list/brief"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
@@ -44,6 +44,9 @@ export type JobOrder = {
   /** Номер наряда на работы. */
   wo: string
 }
+
+/** 13 видов работ (предложения ТБ). */
+const WORKS = ["Подключение", "Приостановление", "Возобновление", "Отключение", "Тестовое подключение", "Изменение маршрутизации", "Изменение IP-адресации", "Увеличение", "Уменьшение", "Перенос", "Переоформление", "Смена технологии", "Отправка оборудования"]
 
 const STATE: Record<State, [string, string]> = {
   dr: ["Черновик", "#8a93a6"],

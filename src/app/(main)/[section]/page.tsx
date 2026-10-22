@@ -4,10 +4,12 @@ import { ALL_SECTIONS, NAV_GROUPS, findSection } from "@/config/nav"
 import { PageHero } from "@/components/shared/page-hero"
 
 /** Разделы со своими маршрутами — заглушка их не отдаёт. */
-const OWN_ROUTES = new Set(["counterparties", "deals", "offers", "discount-requests", "sandbox", "leads", "tech-requests", "work-orders", "ip-requests", "number-capacity", "subscribers", "install-acts", "tasks", "calendar", "sales-plan", "ipr", "forecasts", "tenders", "lots", "tender-reports", "catalog", "price-builder", "contracts", "acts", "reports", "offer-builder", "profile", "contract-builder", "sales-summary", "calls", "stage-report", "requests-report", "leads-report", "addresses", "tv-precheck", "tv-registry", "tv-tr-report", "channel-ids", "test-connections", "temp-increase", "ip-report", "job-orders", "departments", "typical-tr"])
+const OWN_ROUTES = new Set(["counterparties", "deals", "offers", "discount-requests", "sandbox", "leads", "tech-requests", "work-orders", "ip-requests", "number-capacity", "subscribers", "install-acts", "tasks", "calendar", "sales-plan", "ipr", "forecasts", "tenders", "lots", "tender-reports", "catalog", "price-builder", "contracts", "acts", "reports", "offer-builder", "profile", "contract-builder", "sales-summary", "calls", "stage-report", "requests-report", "leads-report", "addresses", "tv-precheck", "tv-registry", "tv-tr-report", "channel-ids", "test-connections", "temp-increase", "ip-report", "job-orders", "departments", "typical-tr", "form-templates"])
 
 export function generateStaticParams() {
-  return ALL_SECTIONS.filter((s) => !OWN_ROUTES.has(s.slug)).map((s) => ({ section: s.slug }))
+  const rest = ALL_SECTIONS.filter((s) => !OWN_ROUTES.has(s.slug)).map((s) => ({ section: s.slug }))
+  // все макеты перенесены; Cache Components требует хотя бы один адрес — служебный, он отдаёт 404
+  return rest.length ? rest : [{ section: "_" }]
 }
 
 /** Заглушка раздела. Заменять по мере переноса макета (номер = файл в архиве дизайна). */

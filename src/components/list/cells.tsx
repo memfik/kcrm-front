@@ -267,3 +267,23 @@ export function MailLine({ who, what, d }: { who: string; what: string; d: strin
     </Line>
   )
 }
+
+/** Варианты решения крупными кнопками («Отключить / Пролонгировать / Перейти к договору»). */
+export function Decision({ items, disabled }: { items: { t: string; p: string; onClick: () => void }[]; disabled?: boolean }) {
+  return (
+    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+      {items.map((d) => (
+        <button
+          key={d.t}
+          type="button"
+          disabled={disabled}
+          onClick={d.onClick}
+          className="flex cursor-pointer flex-col items-start gap-1 rounded-2xl border border-border bg-[var(--soft)] p-3.5 text-left hover:border-[#085eff] disabled:cursor-default disabled:opacity-50 disabled:hover:border-border"
+        >
+          <b className="text-sm">{d.t}</b>
+          <span className="text-xs text-muted-foreground">{d.p}</span>
+        </button>
+      ))}
+    </div>
+  )
+}

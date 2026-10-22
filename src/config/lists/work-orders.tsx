@@ -1,10 +1,12 @@
 import { CircleCheck, CircleX, Clock, Download, FilePlus, FileText, Globe, Link as LinkIcon, Paperclip, RefreshCw, Users, Wrench } from "lucide-react"
 import { Banner, DateCell, Flow, Kv, Line, MiniTable, NameCell, Owner, Pill, Section, Status } from "@/components/list/cells"
 import requests from "@/data/tech-requests-demo.json"
-import { CITY, counterpartyName, fixClient, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { CITY, counterpartyName, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
 import { BRANCHES } from "@/lib/dippp"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 10 Наряды на работы. Доработано по требованиям ОТУП ДИППП и ТБ.
@@ -317,6 +319,6 @@ export const WORK_ORDERS: ListConfig<WorkOrder> = {
     { k: "u", t: "Инициатор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     { k: "ex", t: "Исполнитель", type: "select", opts: staffOpts, get: (x) => x.ex, set: (x, v) => ({ ...x, ex: v }) },
     { k: "plan", t: "Плановый срок, дн", type: "number", get: (x) => String(x.plan), set: (x, v) => ({ ...x, plan: +v || x.plan }) },
-    { k: "date", t: "Дата", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "date", t: "Дата", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || todayLocal() }) },
   ],
 }

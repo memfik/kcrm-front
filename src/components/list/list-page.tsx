@@ -46,9 +46,9 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
   }
   useEffect(() => viewStore.set<View>(cfg.key, { q, page, period }), [cfg.key, q, page, period])
 
-  // Поиск — отложенно: ввод не ждёт пересчёта 2,5 тыс. строк.
-  const search = useDeferredValue(q.q)
-  const list = useMemo(() => applyQuery(cfg, rows, { ...q, q: search }), [cfg, rows, q, search])
+  // Отбор — отложенно: ввод в поиске и клики по фильтрам не ждут пересчёта 2,5 тыс. строк.
+  const deferred = useDeferredValue(q)
+  const list = useMemo(() => applyQuery(cfg, rows, deferred), [cfg, rows, deferred])
   useEffect(() => viewStore.setOrder(cfg.key, list.map((x) => x.id)), [cfg.key, list])
 
   const pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE))

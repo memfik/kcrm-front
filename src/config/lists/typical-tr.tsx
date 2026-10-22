@@ -5,6 +5,7 @@ import { shiftDate, TECH, TODAY, TV_SERVICES } from "@/lib/dippp"
 import { briefFacts, briefStats, type BriefItem } from "@/lib/list/brief"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { shortDate } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 46 Типовые ТР (ОТПП ТК ДИППП, пп. 9, 10, 12): перечень типовых ТР ДИППП и ТР ДЦРС / ДРС, на которые они ссылаются.
@@ -150,6 +151,6 @@ export const TYPICAL_TR: ListConfig<TypicalTr> = {
   fields: [
     // название в форме не правится (в макете тоже — поле по колонке «ТР»): у нового ТР — заглушка
     { k: "code", t: "ТР", type: "text", required: true, get: (x) => x.code, set: (x, v) => ({ ...x, code: v.trim(), name: x.name || "Новое типовое ТР", ext: /^(ДЦРС|ДРС)/.test(v.trim()) }) },
-    { k: "upd", t: "Обновлено", type: "date", get: (x) => x.upd, set: (x, v) => ({ ...x, upd: v || new Date().toISOString().slice(0, 10) }) },
+    { k: "upd", t: "Обновлено", type: "date", get: (x) => x.upd, set: (x, v) => ({ ...x, upd: v || todayLocal() }) },
   ],
 }

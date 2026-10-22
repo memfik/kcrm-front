@@ -2,10 +2,12 @@ import { CircleCheck, ClipboardCheck, Download, FileText, MapPin, Network, Plus,
 import { Banner, DateCell, Dash, Kv, Line, NameCell, Pill, Section, Status, Timeline } from "@/components/list/cells"
 import { MapBlock } from "@/components/list/map-block"
 import requests from "@/data/tech-requests-demo.json"
-import { CITY, counterpartyName, fixClient, managerName, pick, rnd, STAFF } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { CITY, counterpartyName, managerName, pick, rnd, STAFF } from "@/lib/demo-names"
 import { DEPARTMENTS, OPERATORS, shiftDate as shift, STREETS, TECH, TODAY, TV_SERVICES as SERV } from "@/lib/dippp"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 36 Адреса и история ТВ (ОТПП ТК ДИППП, пп. 8, 12, 14, 15). В копии базы истории адресов нет — 160 адресов
@@ -246,6 +248,6 @@ export const ADDRESSES: ListConfig<Address> = {
     { k: "addr", t: "Улица, дом", type: "text", required: true, get: (x) => x.addr, set: (x, v) => ({ ...x, addr: v }) },
     { k: "res", t: "Результат проверки", type: "select", opts: resOpts, get: (x) => x.res, set: (x, v) => ({ ...x, res: v as Res, n: x.n || 1 }) },
     { k: "tech", t: "Технология", type: "select", opts: opts(TECH), get: (x) => x.tech, set: (x, v) => ({ ...x, tech: v }) },
-    { k: "last", t: "Дата проверки", type: "date", get: (x) => x.last, set: (x, v) => ({ ...x, last: v || x.last || new Date().toISOString().slice(0, 10) }) },
+    { k: "last", t: "Дата проверки", type: "date", get: (x) => x.last, set: (x, v) => ({ ...x, last: v || x.last || todayLocal() }) },
   ],
 }

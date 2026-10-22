@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Dialog } from "radix-ui"
 import { Check, Lock, Trash2, X } from "lucide-react"
@@ -28,7 +28,8 @@ const glassField = "h-11 rounded-xl px-3.5 text-foreground has-[[aria-invalid=tr
  */
 export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T>; id?: number }) {
   // поля — свои у раздела или собранные по колонкам, как в макетах
-  const cfg = { ...full, ...formOf(full) }
+  // собираем один раз на открытие панели: formOf проходит по всем строкам раздела
+  const cfg = useMemo(() => ({ ...full, ...formOf(full) }), [full])
   const router = useRouter()
   const rows = useRows(cfg)
   const current = id !== undefined ? rows.find((r) => r.id === id) : undefined

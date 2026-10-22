@@ -3,10 +3,12 @@ import { Banner, DateCell, Kv, MailLine, NameCell, Owner, Pill, Section, Status 
 import { Chat } from "@/components/list/chat"
 import { toast } from "@/components/shared/toast"
 import requests from "@/data/tech-requests-demo.json"
-import { CITY, counterpartyName, fixClient, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { CITY, counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 12 Номерная ёмкость — заявки на выделение городских номеров. Доработано по требованиям ОТУП ДИППП.
@@ -208,7 +210,7 @@ export const NUMBER_CAPACITY: ListConfig<NumberRequest> = {
   // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
   blank: () => ({ id: 0, cs: 0, u: staffOpts[0].v, n: 1, ch: 2, iface: IFACES[0], city: CITY[1], date: "", st: "dr", annul: false }),
   fields: [
-    { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0, date: x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0, date: x.date || todayLocal() }) },
     { k: "city", t: "Город", type: "select", opts: opts(CITY), get: (x) => x.city, set: (x, v) => ({ ...x, city: v }) },
     { k: "n", t: "Количество номеров", type: "select", opts: opts([1, 2, 5, 10, 30, 100]), get: (x) => String(x.n), set: (x, v) => ({ ...x, n: +v }) },
     { k: "ch", t: "Количество каналов", type: "select", opts: opts([2, 4, 8, 30]), get: (x) => String(x.ch), set: (x, v) => ({ ...x, ch: +v }) },

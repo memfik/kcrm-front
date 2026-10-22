@@ -8,13 +8,15 @@ import type { ListConfig, Row } from "./types"
  * TODO: API — загрузка, сохранение и удаление на сервере; это хранилище станет кешем.
  */
 
-type Slot = { rows: Row[]; listeners: Set<() => void> }
+type Slot = { rows: Row[]; listeners: Set<() => void>; subscribe: (l: () => void) => () => void }
 const slots = new Map<string, Slot>()
 
 function slot<T extends Row>(cfg: ListConfig<T>): Slot {
   let s = slots.get(cfg.key)
   if (!s) {
-    s = { rows: cfg.rows(), listeners: new Set() }
+    const listeners = new Set<() => void>()
+    // подписка одна на раздел — useSyncExternalStore не переподписывается на каждом рендере
+    s = { rows: cfg.rows(), listeners, subscribe: (l) => (listeners.add(l), () => void listeners.delete(l)) }
     slots.set(cfg.key, s)
   }
   return s
@@ -28,10 +30,7 @@ function commit(s: Slot, rows: Row[]) {
 export function useRows<T extends Row>(cfg: ListConfig<T>): T[] {
   const s = slot(cfg)
   return useSyncExternalStore(
-    (l) => {
-      s.listeners.add(l)
-      return () => s.listeners.delete(l)
-    },
+    s.subscribe,
     () => s.rows,
     () => s.rows
   ) as T[]

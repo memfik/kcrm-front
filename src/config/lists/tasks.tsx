@@ -7,6 +7,7 @@ import raw from "@/data/tasks-demo.json"
 import { counterpartyName, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { series, sumOf } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 15 Задачи и поручения. Строки — копия базы kCRM; тип и статус («в работе», «срок истёк») — заглушки по ID и сроку. TODO: API.
@@ -187,7 +188,7 @@ export const TASKS: ListConfig<Task> = {
     { k: "d", t: "Тема", type: "text", required: true, wide: true, get: (x) => x.d, set: (x, v) => ({ ...x, d: v.trim() }) },
     { k: "ex", t: "Исполнитель", type: "select", opts: staffOpts, get: (x) => x.ex, set: (x, v) => ({ ...x, ex: v }) },
     { k: "u", t: "Поручил", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
-    { k: "date", t: "Срок", type: "date", get: (x) => x.date.slice(0, 10), set: (x, v) => ({ ...x, date: v ? `${v}${x.date.slice(10) || " 18:00"}` : x.date || `${new Date().toISOString().slice(0, 10)} 18:00` }) },
+    { k: "date", t: "Срок", type: "date", get: (x) => x.date.slice(0, 10), set: (x, v) => ({ ...x, date: v ? `${v}${x.date.slice(10) || " 18:00"}` : x.date || `${todayLocal()} 18:00` }) },
     { k: "cs", t: "ID клиента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
   ],
 }

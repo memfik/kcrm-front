@@ -2,11 +2,13 @@ import { ChartColumn, CircleCheck, CircleX, Clock, Download, FilePlus, Globe, Ha
 import { Banner, DateCell, Kv, Line, MailLine, NameCell, Owner, Pill, Section, Status } from "@/components/list/cells"
 import { toast } from "@/components/shared/toast"
 import requests from "@/data/tech-requests-demo.json"
-import { counterpartyName, fixClient, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
 import { BRANCHES } from "@/lib/dippp"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 11 Заявки IP — выдача, изъятие, переоформление и изменение публичных IP-адресов. Доработано по требованиям ОТУП ДИППП.
@@ -251,7 +253,7 @@ export const IP_REQUESTS: ListConfig<IpRequest> = {
   // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
   blank: () => ({ id: 0, cs: 0, deal: 0, u: staffOpts[0].v, act: ACTIONS[0], block: 8, tech: TECH[0], speed: 50, br: BRANCHES[0], date: "", st: "dr", auto: false }),
   fields: [
-    { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0, date: x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0, date: x.date || todayLocal() }) },
     { k: "deal", t: "№ сделки", type: "number", get: (x) => (x.deal ? String(x.deal) : ""), set: (x, v) => ({ ...x, deal: +v || 0 }) },
     { k: "tech", t: "Последняя миля", type: "select", opts: opts(TECH), get: (x) => x.tech, set: (x, v) => ({ ...x, tech: v }) },
     { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },

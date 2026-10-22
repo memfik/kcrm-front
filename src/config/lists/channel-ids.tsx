@@ -2,12 +2,14 @@ import { CircleCheck, Clock, Download, Link as LinkIcon, Lock, Plus, RefreshCw, 
 import { Banner, DateCell, Kv, MailLine, NameCell, Owner, Pill, Section, Status } from "@/components/list/cells"
 import { toast } from "@/components/shared/toast"
 import requests from "@/data/tech-requests-demo.json"
-import { CITY, counterpartyName, fixClient, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { CITY, counterpartyName, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
 import { BRANCHES, shiftDate, STREETS, TECH, TODAY, TV_SERVICES } from "@/lib/dippp"
 import { briefFacts, briefStats, type BriefItem } from "@/lib/list/brief"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange, shortDate } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 40 ID-каналы (ОТУП ДИППП, модуль «ID-канала»): заявки на выделение и изменение статуса ID-канала.
@@ -234,6 +236,6 @@ export const CHANNEL_IDS: ListConfig<ChannelId> = {
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "serv", t: "Услуга", type: "select", opts: opts(TV_SERVICES), get: (x) => x.serv, set: (x, v) => ({ ...x, serv: v }) },
     { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
-    { k: "u", t: "Инициатор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v, date: x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "u", t: "Инициатор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v, date: x.date || todayLocal() }) },
   ],
 }

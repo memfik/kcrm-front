@@ -2,12 +2,14 @@ import { Download, FileText, Globe, Hash, Link as LinkIcon, Plus, Route, Triangl
 import { Banner, DateCell, Flow, Kv, Line, NameCell, Owner, Pill, Section, Status } from "@/components/list/cells"
 import { toast } from "@/components/shared/toast"
 import requests from "@/data/tech-requests-demo.json"
-import { CITY, counterpartyName, fixClient, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { CITY, counterpartyName, managerName, ownerColor, pick, rnd, STAFF } from "@/lib/demo-names"
 import { BRANCHES, shiftDate, STREETS, TODAY } from "@/lib/dippp"
 import { briefFacts, briefStats, type BriefItem } from "@/lib/list/brief"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange, shortDate } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 44 Наряд-заказы (ОТУП ДИППП, модули «Формирование наряд-заказа» и «Наряд на работы»; предложения ТБ, пп. 4–8).
@@ -338,7 +340,7 @@ export const JOB_ORDERS: ListConfig<JobOrder> = {
     { k: "docs", t: "ТР · КП · IP · ID · №", type: "text", get: (x) => (x.num ? docs(x) : ""), set: parseDocs },
     { k: "u", t: "Менеджер", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
-    { k: "date", t: "Создан", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "date", t: "Создан", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || todayLocal() }) },
     { k: "st", t: "Статус", type: "select", opts: (Object.keys(STATE) as State[]).map((v) => ({ v, label: STATE[v][0], color: STATE[v][1] })), get: (x) => x.st, set: (x, v) => ({ ...x, st: v as State }) },
   ],
 }

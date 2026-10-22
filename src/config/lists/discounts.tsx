@@ -7,6 +7,7 @@ import { counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { fmt, inRange, money } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 06 Запросы скидки — очередь согласования скидок в КП (флаг coapp у согласующего).
@@ -228,7 +229,7 @@ export const DISCOUNTS: ListConfig<Discount> = {
   fields: [
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "u", t: "Инициатор", type: "select", opts: initiatorOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
-    { k: "date", t: "Составлено", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "date", t: "Составлено", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || todayLocal() }) },
     { k: "s", t: "По прейскуранту, ₸", type: "number", get: (x) => (x.s ? String(x.s) : ""), set: (x, v) => ({ ...x, s: +v || 0 }) },
     { k: "es", t: "С учётом скидки, ₸", type: "number", get: (x) => (x.es ? String(x.es) : ""), set: (x, v) => ({ ...x, es: +v || 0 }) },
     { k: "state", t: "Решение", type: "select", opts: stateOpts, get: (x) => x.state, set: (x, v) => ({ ...x, state: v as State }) },

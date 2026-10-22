@@ -2,11 +2,13 @@ import Link from "next/link"
 import { Box, Clock, Eye, FilePlus, FileText, Send } from "lucide-react"
 import { DateCell, Kv, MiniTable, NameCell, Pill, Section, Status } from "@/components/list/cells"
 import requests from "@/data/tech-requests-demo.json"
-import { counterpartyName, fixClient, managerName, pick, rnd } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { counterpartyName, managerName, pick, rnd } from "@/lib/demo-names"
 import { BRANCHES } from "@/lib/dippp"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { inRange } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 14 Акты монтажа и демонтажа — по наряду, с отправкой на подпись в СЭДО.
@@ -168,7 +170,7 @@ export const INSTALL_ACTS: ListConfig<InstallAct> = {
   // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
   blank: () => ({ id: 0, wo: "", cs: 0, u: staffOpts[0].v, date: "", kind: KINDS[0], br: BRANCHES[0], eq: 1, sent: false }),
   fields: [
-    { k: "wo", t: "№ наряда", type: "text", required: true, get: (x) => x.wo, set: (x, v) => ({ ...x, wo: v.trim(), date: x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "wo", t: "№ наряда", type: "text", required: true, get: (x) => x.wo, set: (x, v) => ({ ...x, wo: v.trim(), date: x.date || todayLocal() }) },
     { k: "cs", t: "ID контрагента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
     { k: "eq", t: "Единиц оборудования", type: "number", get: (x) => String(x.eq), set: (x, v) => ({ ...x, eq: +v || 1 }) },

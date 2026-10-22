@@ -1,4 +1,5 @@
 import type { Column, ListConfig, Row } from "./types"
+import { todayLocal } from "@/lib/today"
 
 /** Отбор записей: вкладка, поиск, фильтры-чипы и «Ещё» (даты, число, ответственные). */
 export type Query = {
@@ -78,7 +79,7 @@ export function exportCsv<T>(cfg: { title: string; cols: Pick<Column<T>, "t" | "
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
   a.href = url
-  a.download = `${cfg.title.replace(/\s+/g, "_")}_${new Date().toISOString().slice(0, 10)}.csv`
+  a.download = `${cfg.title.replace(/\s+/g, "_")}_${todayLocal()}.csv`
   document.body.appendChild(a)
   a.click()
   a.remove()

@@ -2,9 +2,11 @@ import Link from "next/link"
 import { Briefcase, CircleCheck, CircleDollarSign, Clock, FileCheck, FilePlus, FileText, Plus, Signature, Upload, Wrench } from "lucide-react"
 import { DateCell, Dash, Flow, Kv, Line, NameCell, Owner, Section, Stage, Status, Timeline } from "@/components/list/cells"
 import raw from "@/data/deals-demo.json"
-import { CONTACT_NAMES, counterpartyName, fixClient, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
+import { fixClient } from "@/lib/demo-clients"
+import { CONTACT_NAMES, counterpartyName, managerName, ownerColor, pick, rnd } from "@/lib/demo-names"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { delta, fmt, inRange, money, periodLabel, prevLabel, signed } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 04 Сделки. Строки — копия базы kCRM (до сентября 2017); суммы в копии пустые — оценка по услуге.
@@ -344,7 +346,7 @@ export const DEALS: ListConfig<Deal> = {
     { k: "cs", t: "ID контрагента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "stg", t: "Этап", type: "select", opts: stageOpts, get: (x) => x.stg, set: (x, v) => ({ ...x, stg: v }) },
     { k: "u", t: "Менеджер", type: "select", opts: managerOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
-    { k: "date", t: "Создана", type: "date", get: (x) => x.date.slice(0, 10), set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "date", t: "Создана", type: "date", get: (x) => x.date.slice(0, 10), set: (x, v) => ({ ...x, date: v || x.date || todayLocal() }) },
     { k: "exp", t: "Ожидание, ₸", type: "number", get: (x) => (x.exp ? String(x.exp) : ""), set: (x, v) => ({ ...x, exp: +v || 0 }) },
     { k: "fore", t: "Прогноз, ₸", type: "number", get: (x) => (x.fore ? String(x.fore) : ""), set: (x, v) => ({ ...x, fore: +v || 0 }) },
   ],

@@ -82,7 +82,9 @@ export function ContractBuilder() {
   const print = () => {
     const w = window.open("", "_blank")
     if (!w || !doc.current) return toast("Разрешите всплывающие окна")
-    w.document.write(`<title>Договор № ${num}</title><style>${PRINT_CSS}</style><body>${doc.current.innerHTML}</body>`)
+    // номер вводит пользователь — в заголовок окна только экранированным
+    const esc = (v: string) => v.replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]!)
+    w.document.write(`<title>Договор № ${esc(num)}</title><style>${PRINT_CSS}</style><body>${doc.current.innerHTML}</body>`)
     w.document.close()
     w.print()
   }

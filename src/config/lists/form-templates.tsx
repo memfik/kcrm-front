@@ -6,6 +6,7 @@ import { shiftDate, TODAY } from "@/lib/dippp"
 import { exportCsv } from "@/lib/list/query"
 import type { ListConfig, Option } from "@/lib/list/types"
 import { shortDate } from "@/lib/period"
+import { todayLocal } from "@/lib/today"
 
 /*
  * 47 Шаблоны форм (ОТПП ТК ДИППП, п. 6): утверждённые рабочие формы подразделений — из них создаются заявки и выгрузки.
@@ -132,6 +133,6 @@ export const FORM_TEMPLATES: ListConfig<FormTemplate> = {
   fields: [
     { k: "code", t: "Форма", type: "text", required: true, get: (x) => x.code, set: (x, v) => ({ ...x, code: v.trim(), name: x.name || "Новая рабочая форма" }) },
     { k: "fmt", t: "Формат", type: "select", opts: [{ v: "docx", label: "DOCX" }, { v: "xlsx", label: "XLSX" }], get: (x) => x.fmt, set: (x, v) => ({ ...x, fmt: v as FormTemplate["fmt"] }) },
-    { k: "upd", t: "Обновлён", type: "date", get: (x) => x.upd, set: (x, v) => ({ ...x, upd: v || new Date().toISOString().slice(0, 10) }) },
+    { k: "upd", t: "Обновлён", type: "date", get: (x) => x.upd, set: (x, v) => ({ ...x, upd: v || todayLocal() }) },
   ],
 }

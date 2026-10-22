@@ -7,7 +7,6 @@ import { Check, CircleX, Copy, Ellipsis, Eye, Pencil, Share2, Trash2, Users } fr
 import { toast } from "@/components/shared/toast"
 import { GlassTextarea } from "@/components/ui/opaline/glass-textarea"
 import { ownerColor, pick, STAFF } from "@/lib/demo-names"
-import { formOf } from "@/lib/list/auto-form"
 import { openForm } from "@/lib/list/form-store"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
@@ -16,11 +15,12 @@ import { Avatar, Pill } from "./cells"
 import { DateField } from "./date-field"
 import { FormSelect } from "./select"
 import { Btn, roundAction } from "./ui"
+import { todayLocal } from "@/lib/today"
 
 export const recordHref = (key: string, id: number) => `/${key}/${id}`
 
-/** У раздела есть форма (/new, /<id>/edit) — своя или собранная по колонкам (см. formOf). */
-export const editable = <T extends Row>(cfg: ListConfig<T>) => formOf(cfg).fields.length > 0
+/** У раздела есть форма (/new, /<id>/edit): форма собирается по колонкам (см. formOf) — нужна хоть одна колонка-поле. Без сборки формы: зовётся в каждой строке. */
+export const editable = <T extends Row>(cfg: ListConfig<T>) => cfg.cols.some((c) => !c.noSort)
 
 export async function shareLink<T extends Row>(cfg: ListConfig<T>, x: T) {
   const url = `${location.origin}${recordHref(cfg.key, x.id)}`
@@ -47,7 +47,7 @@ export function useDeleteDialog<T extends Row>(cfg: ListConfig<T>) {
   const ask = (rows: T[], done?: () => void) => {
     if (!rows.length) return
     setReason("")
-    setDate(new Date().toISOString().slice(0, 10))
+    setDate(todayLocal())
     setInvalid(false)
     setItems({ rows, done })
   }

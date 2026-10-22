@@ -92,6 +92,15 @@ const ALL: JobOrder[] = Array.from({ length: 130 }, (_, i) => {
 const state = (x: JobOrder) => <Status text={STATE[x.st][0]} color={STATE[x.st][1]} />
 const owner = (u: string) => <Owner name={managerName(u)} color={ownerColor(u)} />
 const docs = (x: JobOrder) => `ТР v${x.trv} · КП v${x.kpv}${x.ip ? " · IP" : ""}${x.idc ? " · ID" : ""}${x.tel ? " · №" : ""}`
+/** «ТР v2 · КП v3 · IP · №» → версии и связанные заявки. */
+const parseDocs = (x: JobOrder, v: string): JobOrder => ({
+  ...x,
+  trv: +(v.match(/ТР\s*v?(\d+)/i)?.[1] ?? x.trv),
+  kpv: +(v.match(/КП\s*v?(\d+)/i)?.[1] ?? x.kpv),
+  ip: /\bIP\b/i.test(v),
+  idc: /\bID\b/i.test(v),
+  tel: v.includes("№"),
+})
 const point = (x: JobOrder) => `${pick(CITY, x.id, 33)}, ${pick(STREETS, x.id, 31)}, ${(rnd(x.id, 32) % 180) + 1}`
 const opts = (list: readonly string[]): Option[] => list.map((v) => ({ v, label: v }))
 const staffOpts: Option[] = STAFF.slice(0, 30).map((v) => ({ v, label: managerName(v) }))
@@ -291,7 +300,6 @@ export const JOB_ORDERS: ListConfig<JobOrder> = {
     "После ТР, КП и заявок на IP / ID-канал / номера менеджер формирует наряд-заказ. Последние версии ТР и КП подтягиваются обязательно. Для каждого типа — свой маршрут исполнения.",
   record,
   name: (x) => `Наряд-заказ ${x.num}`,
-  // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
   blank: () => ({
     id: 0,
     num: "",
@@ -312,22 +320,25 @@ export const JOB_ORDERS: ListConfig<JobOrder> = {
     br: BRANCHES[0],
     wo: "",
   }),
+  // как в макете: поля — колонки списка («Контрагент» — по ID, как в остальных разделах)
   fields: [
     {
-      k: "cs",
-      t: "ID контрагента",
-      type: "number",
+      k: "num",
+      t: "Наряд-заказ",
+      type: "text",
       required: true,
-      get: (x) => (x.cs ? String(x.cs) : ""),
-      // номера — по id при сохранении новой записи
-      set: (x, v) => ({ ...x, cs: +v || 0, num: x.num || `НЗ-${3000 + x.id - 6000}`, wo: x.wo || `Н-${18000 + x.id - 6000}`, date: x.date || new Date().toISOString().slice(0, 10) }),
+      wide: true,
+      get: (x) => x.num,
+      // номер наряда — по id при сохранении новой записи
+      set: (x, v) => ({ ...x, num: v.trim(), wo: x.wo || `Н-${18000 + x.id - 6000}` }),
     },
-    { k: "work", t: "Вид работ", type: "select", opts: opts(WORKS), get: (x) => x.work, set: (x, v) => ({ ...x, work: v }) },
-    { k: "type", t: "Тип наряда", type: "select", opts: opts(KINDS), get: (x) => x.type, set: (x, v) => ({ ...x, type: v as Kind }) },
+    { k: "cs", t: "ID контрагента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
+    { k: "type", t: "Тип", type: "select", opts: opts(KINDS), get: (x) => x.type, set: (x, v) => ({ ...x, type: v as Kind }) },
     { k: "cat", t: "Категория", type: "select", opts: opts(CATS), get: (x) => x.cat, set: (x, v) => ({ ...x, cat: v as Cat }) },
-    { k: "so", t: "Подключение через СО", type: "select", opts: opts(["Нет", "Да"]), get: (x) => (x.so ? "Да" : "Нет"), set: (x, v) => ({ ...x, so: v === "Да" }) },
-    { k: "noc", t: "Подписанный договор", type: "select", opts: opts(["Есть", "Нет — нужно согласование ЗДК"]), get: (x) => (x.noc ? "Нет — нужно согласование ЗДК" : "Есть"), set: (x, v) => ({ ...x, noc: v !== "Есть" }) },
-    { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
-    { k: "u", t: "Курирующий менеджер", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
+    { k: "docs", t: "ТР · КП · IP · ID · №", type: "text", get: (x) => (x.num ? docs(x) : ""), set: parseDocs },
+    { k: "u", t: "Менеджер", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
+    // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
+    { k: "date", t: "Создан", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
+    { k: "st", t: "Статус", type: "select", opts: (Object.keys(STATE) as State[]).map((v) => ({ v, label: STATE[v][0], color: STATE[v][1] })), get: (x) => x.st, set: (x, v) => ({ ...x, st: v as State }) },
   ],
 }

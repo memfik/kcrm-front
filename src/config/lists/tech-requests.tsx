@@ -459,21 +459,6 @@ export const TECH_REQUESTS: ListConfig<TechRequest> = {
     { k: "cs", t: "ID заказчика услуг", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0, date: x.date || today() }) },
     { k: "end", t: "ID конечного клиента", type: "number", get: (x) => (x.end ? String(x.end) : ""), set: (x, v) => ({ ...x, end: +v || x.cs }) },
     { k: "cat", t: "Категория", type: "select", opts: catOpts, get: (x) => String(x.cat), set: (x, v) => ({ ...x, cat: +v }) },
-    { k: "type", t: "Тип заявки", type: "select", opts: typeOpts, get: (x) => x.type, set: (x, v) => ({ ...x, type: v }) },
-    { k: "center", t: "Тип обработки", type: "select", opts: centerOpts, get: (x) => String(x.center), set: (x, v) => ({ ...x, center: +v }) },
-    {
-      k: "tender",
-      t: "Тендерная процедура",
-      type: "select",
-      opts: [
-        { v: "0", label: "Нет" },
-        { v: "1", label: "Да" },
-      ],
-      get: (x) => String(x.tender),
-      set: (x, v) => ({ ...x, tender: +v }),
-    },
-    { k: "deal", t: "№ сделки", type: "number", get: (x) => (x.deal ? String(x.deal) : ""), set: (x, v) => ({ ...x, deal: +v || 0 }) },
     { k: "u", t: "Инициатор", type: "select", opts: initiatorOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
-    { k: "cm", t: "Комментарий инициатора", type: "text", wide: true, get: (x) => x.cm, set: (x, v) => ({ ...x, cm: v.trim(), num: x.num || String(x.id) }) },
   ],
 }

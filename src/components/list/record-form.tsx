@@ -192,9 +192,10 @@ function FieldInput<T>({ f, value, invalid, onChange }: { f: Field<T>; value: st
           value={value}
           placeholder={f.t}
           autoFocus={f.required}
+          readOnly={f.readOnly}
           aria-invalid={invalid}
           onChange={(e) => onChange(f.type === "number" ? e.target.value.replace(/\D/g, "") : e.target.value)}
-          className={glassField}
+          className={cn(glassField, f.readOnly && "opacity-60")}
           inputClassName="text-sm"
         />
       )}

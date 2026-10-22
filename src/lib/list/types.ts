@@ -62,6 +62,8 @@ export type Field<T> = {
   opts?: Option[]
   required?: boolean
   wide?: boolean
+  /** Значение считается из других полей — показать, но не править. */
+  readOnly?: boolean
   get: (x: T) => string
   set: (x: T, v: string) => T
 }

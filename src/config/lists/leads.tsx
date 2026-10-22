@@ -166,7 +166,6 @@ export const LEADS: ListConfig<Lead> = {
   // дата — при сохранении (сейчас), а не при рендере: страница пререндерится
   blank: () => ({ id: 0, date: "", tel: "", cs: 0, topic: TOPICS[0], kind: "ком", ul: "ЮЛ", op: "", dur: 0, mgr: "" }),
   fields: [
-    { k: "tel", t: "Телефон", type: "text", required: true, get: (x) => x.tel, set: (x, v) => ({ ...x, tel: v.trim(), date: x.date || new Date().toISOString().slice(0, 16).replace("T", " ") }) },
     { k: "cs", t: "ID компании", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "topic", t: "Тема обращения", type: "select", opts: opts(TOPICS), get: (x) => x.topic, set: (x, v) => ({ ...x, topic: v }) },
     {
@@ -179,17 +178,6 @@ export const LEADS: ListConfig<Lead> = {
       ],
       get: (x) => x.kind,
       set: (x, v) => ({ ...x, kind: v as Lead["kind"] }),
-    },
-    {
-      k: "ul",
-      t: "ЮЛ / ФЛ",
-      type: "select",
-      opts: [
-        { v: "ЮЛ", label: "Юридическое лицо" },
-        { v: "ФЛ", label: "Физическое лицо" },
-      ],
-      get: (x) => x.ul,
-      set: (x, v) => ({ ...x, ul: v as Lead["ul"] }),
     },
     { k: "op", t: "Оператор", type: "text", get: (x) => x.op, set: (x, v) => ({ ...x, op: v.trim() }) },
     { k: "mgr", t: "Передан", type: "select", opts: managerOpts, get: (x) => x.mgr || "none", set: (x, v) => ({ ...x, mgr: v === "none" ? "" : v }) },

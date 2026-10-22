@@ -117,14 +117,6 @@ export const IPR: ListConfig<IprRow> = {
     { k: "sv", t: "Услуга", type: "select", opts: allServices, get: (x) => x.sv, set: (x, v) => ({ ...x, sv: v }) },
     { k: "p", t: "Объём, ₸", type: "number", get: (x) => (x.p ? String(x.p) : ""), set: (x, v) => ({ ...x, p: +v || 0 }) },
     {
-      k: "y",
-      t: "Год",
-      type: "select",
-      opts: ["2016", "2017", "2018"].map((v) => ({ v, label: v })),
-      get: (x) => String(x.y),
-      set: (x, v) => ({ ...x, y: +v }),
-    },
-    {
       k: "m",
       t: "Месяц",
       type: "select",

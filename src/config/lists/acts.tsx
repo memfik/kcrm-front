@@ -109,14 +109,6 @@ export const ACTS: ListConfig<Act> = {
   name: (x) => `Акт № ${x.id}`,
   blank: () => ({ id: 0, t: 1, cs: 0, deal: 0, date: "", scan: false }),
   fields: [
-    {
-      k: "t",
-      t: "Вид акта",
-      type: "select",
-      opts: KINDS.map((label, i) => ({ v: String(i), label })),
-      get: (x) => String(x.t),
-      set: (x, v) => ({ ...x, t: +v }),
-    },
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "deal", t: "№ сделки", type: "number", get: (x) => (x.deal ? String(x.deal) : ""), set: (x, v) => ({ ...x, deal: +v || 0 }) },
     { k: "date", t: "Дата подписания", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v }) },

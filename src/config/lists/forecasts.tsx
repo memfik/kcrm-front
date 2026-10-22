@@ -151,7 +151,6 @@ export const FORECASTS: ListConfig<Forecast> = {
   blank: () => ({ id: 0, cs: 0, u: managerOpts[0].v, name: PROJECTS[0], blk: BLOCKS[0], cost: 0, mo: 0, prob: 50, start: "2018-04-01", weeks: 0 }),
   fields: [
     { k: "name", t: "Проект", type: "text", required: true, wide: true, get: (x) => x.name, set: (x, v) => ({ ...x, name: v.trim() }) },
-    { k: "cs", t: "ID клиента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "blk", t: "Блок продаж", type: "select", opts: opts(BLOCKS), get: (x) => x.blk, set: (x, v) => ({ ...x, blk: v }) },
     { k: "u", t: "Менеджер КБ", type: "select", opts: managerOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     { k: "cost", t: "Стоимость без НДС, ₸", type: "number", get: (x) => (x.cost ? String(x.cost) : ""), set: (x, v) => ({ ...x, cost: +v || 0 }) },

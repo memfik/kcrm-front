@@ -253,17 +253,7 @@ export const IP_REQUESTS: ListConfig<IpRequest> = {
   fields: [
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0, date: x.date || new Date().toISOString().slice(0, 10) }) },
     { k: "deal", t: "№ сделки", type: "number", get: (x) => (x.deal ? String(x.deal) : ""), set: (x, v) => ({ ...x, deal: +v || 0 }) },
-    { k: "act", t: "Требуемое действие", type: "select", opts: opts(ACTIONS), get: (x) => x.act, set: (x, v) => ({ ...x, act: v }) },
-    {
-      k: "block",
-      t: "Требуемый блок",
-      type: "select",
-      opts: [4, 8, 16, 32, 64].map((n) => ({ v: String(n), label: `/${32 - Math.log2(n)} · ${n} адресов` })),
-      get: (x) => String(x.block),
-      set: (x, v) => ({ ...x, block: +v }),
-    },
     { k: "tech", t: "Последняя миля", type: "select", opts: opts(TECH), get: (x) => x.tech, set: (x, v) => ({ ...x, tech: v }) },
-    { k: "speed", t: "Скорость, Мбит/с", type: "select", opts: opts(["10", "20", "50", "100"]), get: (x) => String(x.speed), set: (x, v) => ({ ...x, speed: +v }) },
     { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
     { k: "u", t: "Инициатор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     {

@@ -239,12 +239,9 @@ export const TEMP_INCREASE: ListConfig<TempIncrease> = {
   blank: () => ({ id: 0, cs: 0, u: staffOpts[0].v, ctr: "", serv: SERVICES[0], base: 50, tmp: 100, start: "", end: "", term: 14, st: "act", price: 0 }),
   fields: [
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => recalc({ ...x, cs: +v || 0, start: x.start || TODAY }) },
-    { k: "ctr", t: "Договор", type: "text", required: true, get: (x) => x.ctr, set: (x, v) => ({ ...x, ctr: v }) },
     { k: "serv", t: "Услуга", type: "select", opts: opts(SERVICES), get: (x) => x.serv, set: (x, v) => ({ ...x, serv: v }) },
     { k: "base", t: "Объём по договору, Мбит/с", type: "select", opts: opts(BASES), get: (x) => String(x.base), set: (x, v) => recalc({ ...x, base: +v || x.base }) },
-    { k: "tmp", t: "Временный объём, Мбит/с", type: "number", required: true, get: (x) => String(x.tmp), set: (x, v) => recalc({ ...x, tmp: +v || x.tmp }) },
     { k: "start", t: "Начало начислений", type: "date", get: (x) => x.start, set: (x, v) => recalc({ ...x, start: v }) },
-    { k: "term", t: "Срок, дней", type: "select", opts: opts(TERMS), get: (x) => String(x.term), set: (x, v) => recalc({ ...x, term: +v || x.term }) },
     { k: "u", t: "Менеджер", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
   ],
 }

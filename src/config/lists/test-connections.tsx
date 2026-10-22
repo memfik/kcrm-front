@@ -273,13 +273,10 @@ export const TEST_CONNECTIONS: ListConfig<TestConnection> = {
   blank: () => ({ id: 0, cs: 0, u: staffOpts[0].v, serv: TV_SERVICES[0], speed: 50, cat: "B2B", urg: false, term: 30, start: "", end: "", st: "prep", prol: 0, br: BRANCHES[0] }),
   fields: [
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => withDates({ ...x, cs: +v || 0, start: x.start || shiftDate(TODAY, 7) }) },
-    { k: "serv", t: "Услуга", type: "select", opts: opts(TV_SERVICES), get: (x) => x.serv, set: (x, v) => ({ ...x, serv: v }) },
-    { k: "speed", t: "Скорость, Мбит/с", type: "select", opts: opts(SPEEDS), get: (x) => String(x.speed), set: (x, v) => ({ ...x, speed: +v || x.speed }) },
     { k: "cat", t: "Категория клиента", type: "select", opts: opts(CATS), get: (x) => x.cat, set: (x, v) => ({ ...x, cat: v as Cat, urg: v === "B2G" || x.urg }) },
     { k: "urg", t: "Срочность", type: "select", opts: [{ v: "0", label: "Стандартное" }, { v: "1", label: "Срочное — ускоренный SLA" }], get: (x) => (x.urg ? "1" : "0"), set: (x, v) => ({ ...x, urg: v === "1" }) },
     { k: "start", t: "Дата подключения", type: "date", get: (x) => x.start, set: (x, v) => withDates({ ...x, start: v }) },
     { k: "term", t: "Срок, дней", type: "select", opts: opts(TERMS), get: (x) => String(x.term), set: (x, v) => withDates({ ...x, term: +v || x.term }) },
-    { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
     { k: "u", t: "Менеджер", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
   ],
 }

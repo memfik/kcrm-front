@@ -231,11 +231,8 @@ export const CHANNEL_IDS: ListConfig<ChannelId> = {
   // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
   blank: () => ({ id: 0, cs: 0, u: staffOpts[0].v, act: "Выделение", auto: false, ch: "", serv: TV_SERVICES[0], speed: 50, tech: TECH[0], br: BRANCHES[0], date: "", st: "dr", newst: "Активен", sync: false }),
   fields: [
-    { k: "act", t: "Требуемое действие", type: "select", opts: opts(ACTS), get: (x) => x.act, set: (x, v) => ({ ...x, act: v as Act, ch: x.ch || channel(x.id), newst: v === "Выделение" ? "Активен" : x.newst === "Активен" ? "Приостановлен" : x.newst }) },
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "serv", t: "Услуга", type: "select", opts: opts(TV_SERVICES), get: (x) => x.serv, set: (x, v) => ({ ...x, serv: v }) },
-    { k: "speed", t: "Скорость, Мбит/с", type: "select", opts: opts(SPEEDS), get: (x) => String(x.speed), set: (x, v) => ({ ...x, speed: +v || x.speed }) },
-    { k: "tech", t: "Технология", type: "select", opts: opts(TECH), get: (x) => x.tech, set: (x, v) => ({ ...x, tech: v }) },
     { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
     { k: "u", t: "Инициатор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v, date: x.date || new Date().toISOString().slice(0, 10) }) },
   ],

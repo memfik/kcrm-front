@@ -159,14 +159,6 @@ export const SALES_PLAN: ListConfig<PlanRow> = {
   blank: () => ({ id: 0, u: managerOpts[0].v, y: 2017, plan: zeros(), fact: zeros() }),
   fields: [
     { k: "u", t: "Менеджер", type: "select", opts: managerOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
-    {
-      k: "y",
-      t: "Год",
-      type: "select",
-      opts: ["2016", "2017", "2018"].map((v) => ({ v, label: v })),
-      get: (x) => String(x.y),
-      set: (x, v) => ({ ...x, y: +v }),
-    },
     ...MON.map((_, i) => monthField(i)),
   ],
 }

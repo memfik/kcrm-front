@@ -243,11 +243,9 @@ export const ADDRESSES: ListConfig<Address> = {
   // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
   blank: () => ({ id: 0, city: CITY[0], addr: "", n: 0, res: "yes", last: "", tech: TECH[0], so: [], tr: 0, cs: 0, src: "2ГИС", node: 0 }),
   fields: [
-    { k: "city", t: "Город", type: "select", opts: opts(CITY), get: (x) => x.city, set: (x, v) => ({ ...x, city: v }) },
     { k: "addr", t: "Улица, дом", type: "text", required: true, get: (x) => x.addr, set: (x, v) => ({ ...x, addr: v }) },
     { k: "res", t: "Результат проверки", type: "select", opts: resOpts, get: (x) => x.res, set: (x, v) => ({ ...x, res: v as Res, n: x.n || 1 }) },
     { k: "tech", t: "Технология", type: "select", opts: opts(TECH), get: (x) => x.tech, set: (x, v) => ({ ...x, tech: v }) },
-    { k: "cs", t: "ID контрагента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "last", t: "Дата проверки", type: "date", get: (x) => x.last, set: (x, v) => ({ ...x, last: v || x.last || new Date().toISOString().slice(0, 10) }) },
   ],
 }

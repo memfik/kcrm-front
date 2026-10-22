@@ -231,10 +231,6 @@ export const CALENDAR: ListConfig<CalendarEvent> = {
   blank: () => ({ id: 0, cs: 0, date: "", d: "", u: staffOpts[0].v, done: false }),
   fields: [
     { k: "d", t: "Событие", type: "text", required: true, wide: true, get: (x) => x.d, set: (x, v) => ({ ...x, d: v.trim() }) },
-    // день — сегодня в макете (15 марта 2018), если не выбран: без привязки к «сейчас», страница пререндерится
-    { k: "day", t: "Дата", type: "date", get: (x) => x.date.slice(0, 10), set: (x, v) => ({ ...x, date: `${v || x.date.slice(0, 10) || TODAY} ${x.date.slice(11) || "10:00"}` }) },
-    { k: "time", t: "Время", type: "text", get: (x) => x.date.slice(11) || "10:00", set: (x, v) => ({ ...x, date: `${x.date.slice(0, 10) || TODAY} ${/^\d\d:\d\d$/.test(v) ? v : "10:00"}` }) },
-    { k: "cs", t: "ID клиента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "u", t: "Автор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
   ],
 }

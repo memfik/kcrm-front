@@ -313,14 +313,9 @@ export const COUNTERPARTIES: ListConfig<Counterparty> = {
   blank: () => ({ id: 0, uid: ME, name: "", form: "ТОО", bin: "", seg: "B2B", ind: IND[0], cat: 0, typ: TYP[0], st: 0, kp: 0, ct: 0, dl: 0, cc: 1, last: null, city: "Астана" }),
   fields: [
     { k: "name", t: "Контрагент", type: "text", required: true, wide: true, get: (x) => x.name, set: (x, v) => ({ ...x, name: v.trim() }) },
-    { k: "form", t: "ЮЛ форма собственности", type: "select", opts: opts(FORM), get: (x) => x.form, set: (x, v) => ({ ...x, form: v }) },
-    { k: "bin", t: "БИН/ИИН", type: "number", get: (x) => x.bin, set: (x, v) => ({ ...x, bin: v }) },
     { k: "seg", t: "Сегмент", type: "select", opts: opts(SEG), get: (x) => x.seg, set: (x, v) => ({ ...x, seg: v }) },
-    { k: "ind", t: "Потреб. сегмент", type: "select", opts: opts(IND), get: (x) => x.ind, set: (x, v) => ({ ...x, ind: v }) },
     { k: "cat", t: "Категория", type: "select", opts: catOpts, get: (x) => String(x.cat), set: (x, v) => ({ ...x, cat: +v }) },
-    { k: "typ", t: "Тип клиента", type: "select", opts: opts(TYP), get: (x) => x.typ, set: (x, v) => ({ ...x, typ: v }) },
     { k: "st", t: "Статус", type: "select", opts: statusOpts, get: (x) => String(x.st), set: (x, v) => ({ ...x, st: +v }) },
     { k: "uid", t: "Владелец", type: "select", opts: ownerOpts, get: (x) => x.uid, set: (x, v) => ({ ...x, uid: v }) },
-    { k: "city", t: "Город", type: "select", opts: opts(CITY), get: (x) => x.city, set: (x, v) => ({ ...x, city: v }) },
   ],
 }

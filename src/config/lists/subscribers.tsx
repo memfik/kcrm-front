@@ -151,7 +151,6 @@ export const SUBSCRIBERS: ListConfig<Subscriber> = {
   name: (x) => counterpartyName(x.cs),
   blank: () => ({ id: 0, cs: 0, deal: "", u: staffOpts[0].v, stw: "", fin: "", cm: "", succ: 0 }),
   fields: [
-    { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "deal", t: "№ сделки", type: "number", required: true, get: (x) => x.deal, set: (x, v) => ({ ...x, deal: v }) },
     { k: "u", t: "Исполнитель", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     { k: "cm", t: "Комментарий", type: "text", wide: true, get: (x) => x.cm, set: (x, v) => ({ ...x, cm: v.trim() }) },

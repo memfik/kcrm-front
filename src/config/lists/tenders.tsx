@@ -219,14 +219,10 @@ export const TENDERS: ListConfig<Tender> = {
   }),
   fields: [
     { k: "name", t: "Наименование", type: "text", required: true, wide: true, get: (x) => x.name, set: (x, v) => ({ ...x, name: v.trim() }) },
-    { k: "num", t: "Номер закупки", type: "text", get: (x) => x.num, set: (x, v) => ({ ...x, num: v.trim() }) },
-    { k: "sp", t: "Способ закупки", type: "select", opts: opts(METHODS), get: (x) => x.sp, set: (x, v) => ({ ...x, sp: v }) },
     { k: "org", t: "Заказчик", type: "text", wide: true, get: (x) => x.org, set: (x, v) => ({ ...x, org: v.trim() }) },
     { k: "date", t: "Срок решения об участии", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date }) },
     { k: "open", t: "Дата вскрытия", type: "date", get: (x) => x.open, set: (x, v) => ({ ...x, open: v || x.open }) },
     { k: "budget", t: "Бюджет, ₸", type: "number", get: (x) => (x.budget ? String(x.budget) : ""), set: (x, v) => ({ ...x, budget: +v || 0 }) },
-    { k: "lots", t: "Лотов", type: "number", get: (x) => String(x.lots), set: (x, v) => ({ ...x, lots: +v || 1 }) },
-    { k: "ks", t: "ТК / ТО / СИ", type: "select", opts: opts(["ТК", "ТО", "СИ"]), get: (x) => x.ks, set: (x, v) => ({ ...x, ks: v }) },
     { k: "u", t: "Ответственный", type: "select", opts: managerOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
   ],
 }

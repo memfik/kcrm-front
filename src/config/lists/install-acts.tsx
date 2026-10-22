@@ -170,9 +170,7 @@ export const INSTALL_ACTS: ListConfig<InstallAct> = {
   fields: [
     { k: "wo", t: "№ наряда", type: "text", required: true, get: (x) => x.wo, set: (x, v) => ({ ...x, wo: v.trim(), date: x.date || new Date().toISOString().slice(0, 10) }) },
     { k: "cs", t: "ID контрагента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
-    { k: "kind", t: "Вид работ", type: "select", opts: opts(KINDS), get: (x) => x.kind, set: (x, v) => ({ ...x, kind: v }) },
     { k: "br", t: "Филиал", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
     { k: "eq", t: "Единиц оборудования", type: "number", get: (x) => String(x.eq), set: (x, v) => ({ ...x, eq: +v || 1 }) },
-    { k: "u", t: "Получатель", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
   ],
 }

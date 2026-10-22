@@ -145,7 +145,6 @@ export const LOTS_LIST: ListConfig<Lot> = {
   blank: () => ({ id: 0, ten: "", name: "", budget: 0, place: CITY[1], guar: 0, comp: 1, res: "wait" }),
   fields: [
     { k: "name", t: "Лот", type: "text", required: true, wide: true, get: (x) => x.name, set: (x, v) => ({ ...x, name: v.trim() }) },
-    { k: "ten", t: "№ закупки", type: "text", get: (x) => x.ten, set: (x, v) => ({ ...x, ten: v.trim() }) },
     { k: "place", t: "Место поставки", type: "select", opts: opts(CITY), get: (x) => x.place, set: (x, v) => ({ ...x, place: v }) },
     { k: "budget", t: "Бюджет без НДС, ₸", type: "number", get: (x) => (x.budget ? String(x.budget) : ""), set: (x, v) => ({ ...x, budget: +v || 0 }) },
     { k: "guar", t: "Обеспечение", type: "select", opts: [0, 1, 3].map((v) => ({ v: String(v), label: v ? `${v}%` : "не требуется" })), get: (x) => String(x.guar), set: (x, v) => ({ ...x, guar: +v }) },

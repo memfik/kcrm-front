@@ -342,18 +342,6 @@ export const DEALS: ListConfig<Deal> = {
   fields: [
     { k: "name", t: "Сделка", type: "text", required: true, wide: true, get: (x) => x.name, set: (x, v) => ({ ...x, name: v.trim() }) },
     { k: "cs", t: "ID контрагента", type: "number", get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
-    {
-      k: "pid",
-      t: "Тип",
-      type: "select",
-      opts: [
-        { v: "0", label: "Новая сделка" },
-        { v: "1", label: "Доп. соглашение" },
-      ],
-      get: (x) => (x.pid ? "1" : "0"),
-      set: (x, v) => ({ ...x, pid: v === "1" ? x.pid || 1 : 0 }),
-    },
-    { k: "serv", t: "Услуга", type: "select", opts: SERV.map((v) => ({ v, label: v })), get: (x) => x.serv, set: (x, v) => ({ ...x, serv: v }) },
     { k: "stg", t: "Этап", type: "select", opts: stageOpts, get: (x) => x.stg, set: (x, v) => ({ ...x, stg: v }) },
     { k: "u", t: "Менеджер", type: "select", opts: managerOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     { k: "date", t: "Создана", type: "date", get: (x) => x.date.slice(0, 10), set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },

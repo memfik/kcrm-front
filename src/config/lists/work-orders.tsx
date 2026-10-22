@@ -310,11 +310,9 @@ export const WORK_ORDERS: ListConfig<WorkOrder> = {
   // дата — при сохранении (сегодня), а не при рендере: страница пререндерится
   blank: () => ({ id: 0, num: "", type: TYPES[0], cs: 0, deal: 0, u: staffOpts[0].v, ex: staffOpts[1].v, br: BRANCHES[0], date: "", st: "new", center: 1, cat: "Стандартный", plan: 7, fact: 0 }),
   fields: [
-    { k: "type", t: "Тип работ", type: "select", opts: opts(TYPES), get: (x) => x.type, set: (x, v) => ({ ...x, type: v, num: x.num || `Н-${18000 + x.id}` }) },
     { k: "cat", t: "Категория", type: "select", opts: catOpts, get: (x) => x.cat, set: (x, v) => ({ ...x, cat: v as WorkOrder["cat"] }) },
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "deal", t: "№ сделки", type: "number", get: (x) => (x.deal ? String(x.deal) : ""), set: (x, v) => ({ ...x, deal: +v || 0 }) },
-    { k: "center", t: "Тип обработки", type: "select", opts: centerOpts, get: (x) => String(x.center), set: (x, v) => ({ ...x, center: +v }) },
     { k: "br", t: "Подразделение", type: "select", opts: opts(BRANCHES), get: (x) => x.br, set: (x, v) => ({ ...x, br: v }) },
     { k: "u", t: "Инициатор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     { k: "ex", t: "Исполнитель", type: "select", opts: staffOpts, get: (x) => x.ex, set: (x, v) => ({ ...x, ex: v }) },

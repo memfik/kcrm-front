@@ -229,7 +229,6 @@ export const DISCOUNTS: ListConfig<Discount> = {
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
     { k: "u", t: "Инициатор", type: "select", opts: initiatorOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     { k: "date", t: "Составлено", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
-    { k: "req", t: "Позиций на скидку", type: "number", get: (x) => String(x.req), set: (x, v) => ({ ...x, req: +v || 1 }) },
     { k: "s", t: "По прейскуранту, ₸", type: "number", get: (x) => (x.s ? String(x.s) : ""), set: (x, v) => ({ ...x, s: +v || 0 }) },
     { k: "es", t: "С учётом скидки, ₸", type: "number", get: (x) => (x.es ? String(x.es) : ""), set: (x, v) => ({ ...x, es: +v || 0 }) },
     { k: "state", t: "Решение", type: "select", opts: stateOpts, get: (x) => x.state, set: (x, v) => ({ ...x, state: v as State }) },

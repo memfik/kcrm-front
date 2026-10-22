@@ -212,7 +212,6 @@ export const NUMBER_CAPACITY: ListConfig<NumberRequest> = {
     { k: "city", t: "Город", type: "select", opts: opts(CITY), get: (x) => x.city, set: (x, v) => ({ ...x, city: v }) },
     { k: "n", t: "Количество номеров", type: "select", opts: opts([1, 2, 5, 10, 30, 100]), get: (x) => String(x.n), set: (x, v) => ({ ...x, n: +v }) },
     { k: "ch", t: "Количество каналов", type: "select", opts: opts([2, 4, 8, 30]), get: (x) => String(x.ch), set: (x, v) => ({ ...x, ch: +v }) },
-    { k: "iface", t: "Интерфейс АТС", type: "select", opts: opts(IFACES), get: (x) => x.iface, set: (x, v) => ({ ...x, iface: v }) },
     { k: "u", t: "Инициатор", type: "select", opts: staffOpts, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
     {
       k: "st",

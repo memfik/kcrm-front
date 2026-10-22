@@ -152,19 +152,7 @@ export const CONTRACTS: ListConfig<Contract> = {
     { k: "num", t: "Номер договора", type: "text", required: true, get: (x) => (x.num === "б/н" ? "" : x.num), set: (x, v) => ({ ...x, num: v.trim() || "б/н" }) },
     { k: "date", t: "Дата", type: "date", get: (x) => x.date, set: (x, v) => ({ ...x, date: v || x.date || new Date().toISOString().slice(0, 10) }) },
     { k: "cs", t: "ID контрагента", type: "number", required: true, get: (x) => (x.cs ? String(x.cs) : ""), set: (x, v) => ({ ...x, cs: +v || 0 }) },
-    { k: "deal", t: "№ сделки", type: "number", get: (x) => (x.deal ? String(x.deal) : ""), set: (x, v) => ({ ...x, deal: +v || 0 }) },
     { k: "t", t: "Тип", type: "select", opts: [1, 2, 3].map((v) => ({ v: String(v), label: TYPES[v] })), get: (x) => String([1, 2, 3].includes(x.t) ? x.t : 1), set: (x, v) => ({ ...x, t: +v }) },
-    {
-      k: "cust",
-      t: "Клиент",
-      type: "select",
-      opts: [
-        { v: "0", label: "Новый" },
-        { v: "1", label: "Существующий" },
-      ],
-      get: (x) => (x.cust ? "1" : "0"),
-      set: (x, v) => ({ ...x, cust: v === "1" }),
-    },
     { k: "u", t: "Менеджер", type: "select", opts: allManagers, get: (x) => x.u, set: (x, v) => ({ ...x, u: v }) },
   ],
 }

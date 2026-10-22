@@ -20,7 +20,7 @@ export default function NotFound() {
       <Header />
       <main className="relative z-[1] flex-1 overflow-x-clip pb-16 max-sm:pb-[calc(90px+env(safe-area-inset-bottom,0px))]">
         <section className="page rise pt-16 pb-10 text-center max-sm:pt-10">
-          <p className="nf-float text-[96px] leading-none font-bold tracking-tight text-[#085eff] tabular-nums max-sm:text-[72px]">404</p>
+          <p className="text-[96px] leading-none font-bold tracking-tight text-[#085eff] tabular-nums max-sm:text-[72px]">404</p>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight max-sm:text-2xl">Страница не найдена</h1>
           <p className="mx-auto mt-2 max-w-[460px] text-sm text-muted-foreground">
             Адрес набран с ошибкой или раздел перенесён. Вернитесь на главную или выберите раздел ниже.

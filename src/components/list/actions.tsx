@@ -7,6 +7,7 @@ import { Check, CircleX, Copy, Ellipsis, Eye, Pencil, Share2, Trash2, Users } fr
 import { toast } from "@/components/shared/toast"
 import { GlassTextarea } from "@/components/ui/opaline/glass-textarea"
 import { ownerColor, pick, STAFF } from "@/lib/demo-names"
+import { formOf } from "@/lib/list/auto-form"
 import { openForm } from "@/lib/list/form-store"
 import { rowsStore } from "@/lib/list/store"
 import type { ListConfig, Row } from "@/lib/list/types"
@@ -18,8 +19,8 @@ import { Btn, roundAction } from "./ui"
 
 export const recordHref = (key: string, id: number) => `/${key}/${id}`
 
-/** У раздела есть форма (/new, /<id>/edit). */
-export const editable = <T extends Row>(cfg: ListConfig<T>) => !!cfg.fields?.length && !!cfg.blank
+/** У раздела есть форма (/new, /<id>/edit) — своя или собранная по колонкам (см. formOf). */
+export const editable = <T extends Row>(cfg: ListConfig<T>) => formOf(cfg).fields.length > 0
 
 export async function shareLink<T extends Row>(cfg: ListConfig<T>, x: T) {
   const url = `${location.origin}${recordHref(cfg.key, x.id)}`
@@ -183,12 +184,10 @@ export function RowMenu<T extends Row>({ cfg, row, onDelete }: { cfg: ListConfig
               Дублировать
             </DropdownMenu.Item>
           )}
-          {!cfg.noDelete && (
-            <DropdownMenu.Item className={`${item} text-[#ff5257]`} onSelect={onDelete}>
-              {cfg.archive ? <CircleX /> : <Trash2 />}
-              {removeLabel(cfg)}
-            </DropdownMenu.Item>
-          )}
+          <DropdownMenu.Item className={`${item} text-[#ff5257]`} onSelect={onDelete}>
+            {cfg.archive ? <CircleX /> : <Trash2 />}
+            {removeLabel(cfg)}
+          </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>

@@ -136,8 +136,6 @@ export type ListConfig<T extends Row> = {
   rowHref?: (x: T) => string | undefined
   /** Без вида «Карточки» — только таблица. */
   noCards?: boolean
-  /** Записи не удаляют (каталог отчётов): нет «Удалить» в списке и карточке. */
-  noDelete?: boolean
   archive?: Archive<T>
   /** Массовое действие над выбранными — для кнопки с onClick: "bulk». Возвращает отмену (если её можно отменить). */
   bulk?: { done: string; run: (rows: T[]) => (() => void) | void }
@@ -149,7 +147,7 @@ export type ListConfig<T extends Row> = {
   record: (x: T) => RecordView
   /** Финальный статус — поля записи заблокированы для редактирования. */
   locked?: (x: T) => boolean
-  /** Без полей — раздел только для просмотра: нет /new, /edit и «Изменить». */
+  /** Поля формы; без них форма собирается по колонкам, новая запись — копия первой строки (см. formOf). */
   fields?: Field<T>[]
   blank?: () => T
   /** Название записи (заголовок, тосты, «Удалить …?»). */

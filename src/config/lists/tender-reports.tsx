@@ -128,7 +128,6 @@ export const TENDER_REPORTS: ListConfig<TenderReport> = {
   ],
   sub: () => "Отчёты по закупкам и лотам с выгрузкой в Excel. Цифры в карточках — сравнение с прошлым годом.",
   noCards: true,
-  noDelete: true,
   record: (x) => ({
     title: x.n,
     meta: <span className="text-[13px]">{x.d}</span>,

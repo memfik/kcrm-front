@@ -228,15 +228,13 @@ export function ListPage<T extends Row>({ cfg }: { cfg: ListConfig<T> }) {
             </div>
             <MoreButton q={q} onClick={() => setMore(true)} />
             <span className="flex-1 max-sm:hidden" />
-            {!cfg.noDelete && (
-              <Btn danger disabled={!checked.size} onClick={() => del.ask(rows.filter((x) => checked.has(x.id)), () => setChecked(new Set()))} className="max-sm:h-[38px] max-sm:px-3">
-                {cfg.archive ? <CircleX /> : <Trash2 />}
-                <span className="max-sm:hidden">
-                  {removeLabel(cfg)} (<b className="font-semibold tabular-nums">{checked.size}</b>)
-                </span>
-                <span className="sm:hidden">{checked.size || ""}</span>
-              </Btn>
-            )}
+            <Btn danger disabled={!checked.size} onClick={() => del.ask(rows.filter((x) => checked.has(x.id)), () => setChecked(new Set()))} className="max-sm:h-[38px] max-sm:px-3">
+              {cfg.archive ? <CircleX /> : <Trash2 />}
+              <span className="max-sm:hidden">
+                {removeLabel(cfg)} (<b className="font-semibold tabular-nums">{checked.size}</b>)
+              </span>
+              <span className="sm:hidden">{checked.size || ""}</span>
+            </Btn>
             {!cfg.noCards && <ViewSwitch mode={mode.value} onChange={mode.set} />}
           </div>
 
@@ -546,11 +544,9 @@ function Cards<T extends Row>({
                     <Pencil />
                   </button>
                 )}
-                {!cfg.noDelete && (
-                  <button type="button" className={cn(roundAction, "hover:border-[#ff3b30] hover:bg-[#ff3b30]")} title={removeLabel(cfg)} onClick={() => onDelete(x)}>
-                    {cfg.archive ? <CircleX /> : <Trash2 />}
-                  </button>
-                )}
+                <button type="button" className={cn(roundAction, "hover:border-[#ff3b30] hover:bg-[#ff3b30]")} title={removeLabel(cfg)} onClick={() => onDelete(x)}>
+                  {cfg.archive ? <CircleX /> : <Trash2 />}
+                </button>
                 <RowMenu cfg={cfg} row={x} onDelete={() => onDelete(x)} />
                 <Link
                   href={cfg.rowHref?.(x) ?? recordHref(cfg.key, x.id)}

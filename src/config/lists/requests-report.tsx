@@ -96,7 +96,6 @@ export const REQUESTS_REPORT: ListConfig<BranchRow> = {
   analytics: { title: "По месяцам", render: ({ r, p }) => <MonthChart title="Заявки ТВ и ТР по месяцам" series={BY_MONTH} r={r} p={p} /> },
   sub: () => "Сводный отчёт по заявкам ТВ/ТР и нарядам по филиалам и ответственным (areport). Выгружается в Excel.",
   noCards: true,
-  noDelete: true,
   record: (x) => ({
     title: `Филиал ${x.br}`,
     meta: <span className="text-[13px]">{managerName(x.u)}</span>,

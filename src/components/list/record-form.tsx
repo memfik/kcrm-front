@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { Dialog } from "radix-ui"
 import { Check, Lock, Trash2, X } from "lucide-react"
 import { toast } from "@/components/shared/toast"
+import { formOf } from "@/lib/list/auto-form"
 import { closeForm } from "@/lib/list/form-store"
 import { rowsStore, useRows } from "@/lib/list/store"
 import type { Field, ListConfig, Row } from "@/lib/list/types"
@@ -26,8 +27,8 @@ const glassField = "h-11 rounded-xl px-3.5 text-foreground has-[[aria-invalid=tr
  * Открывается через openForm(), закрывается крестиком, «Отменой», кликом мимо, Esc или «Назад» в браузере.
  */
 export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T>; id?: number }) {
-  // форму отдают только разделам с полями (см. editable)
-  const cfg = full as ListConfig<T> & Required<Pick<ListConfig<T>, "fields" | "blank">>
+  // поля — свои у раздела или собранные по колонкам, как в макетах
+  const cfg = { ...full, ...formOf(full) }
   const router = useRouter()
   const rows = useRows(cfg)
   const current = id !== undefined ? rows.find((r) => r.id === id) : undefined
@@ -135,7 +136,7 @@ export function RecordForm<T extends Row>({ cfg: full, id }: { cfg: ListConfig<T
             </div>
 
             <div className="flex justify-end gap-2.5 border-t border-border px-6 pt-3.5 pb-5 max-sm:px-4">
-              {!isNew && !cfg.noDelete && (
+              {!isNew && (
                 <Btn
                   className="mr-auto h-11 text-[#ff5257]"
                   onClick={() =>

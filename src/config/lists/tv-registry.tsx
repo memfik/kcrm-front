@@ -190,7 +190,6 @@ export const TV_REGISTRY: ListConfig<RegistryRow> = {
   ],
   sub: () =>
     `Вы — ${managerName(ME)}, ${MY_DEP}. Во вкладке «Мои заявки» — делегированные вам; «Заявки отдела» и «Все» доступны начальнику отдела. Выгрузка повторяет форму КТС-РФ-ДППП-26 с учётом фильтров.`,
-  noDelete: true,
   record,
   cardStatus: "res",
   name: (x) => `Заявка № ${x.num}`,

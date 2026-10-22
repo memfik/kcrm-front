@@ -92,12 +92,10 @@ export function RecordPage<T extends Row>({ cfg, id }: { cfg: ListConfig<T>; id:
                 Редактировать
               </Btn>
             )}
-            {!cfg.noDelete && (
-              <Btn className="h-[42px] text-[#ff5257] max-sm:h-[38px]" onClick={() => del.ask([x], cfg.archive ? undefined : () => router.push(`/${cfg.key}`))}>
-                {cfg.archive ? <CircleX /> : <Trash2 />}
-                {removeLabel(cfg)}
-              </Btn>
-            )}
+            <Btn className="h-[42px] text-[#ff5257] max-sm:h-[38px]" onClick={() => del.ask([x], cfg.archive ? undefined : () => router.push(`/${cfg.key}`))}>
+              {cfg.archive ? <CircleX /> : <Trash2 />}
+              {removeLabel(cfg)}
+            </Btn>
           </div>
         </div>
 

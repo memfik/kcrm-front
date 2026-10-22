@@ -96,7 +96,6 @@ export const CATALOG: ListConfig<CatalogItem> = {
   ],
   sub: () => "Каталог услуг из действующей версии прейскуранта: телефония, интернет, каналы, VPN, хостинг. Отсюда позиции попадают в КП.",
   noCards: true,
-  noDelete: true,
   record: (x) => {
     const params = [
       { t: "Услуга", v: x.d, wide: true },

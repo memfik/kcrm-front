@@ -109,7 +109,6 @@ export const REPORTS_LIST: ListConfig<Report> = {
   // «Экспресс-отчёт» — отмеченные отчёты; отменять нечего
   bulk: { done: "Сформировано отчётов", run: (rows) => void rows.forEach(generate) },
   rowHref: (x) => x.page,
-  noDelete: true,
   record: (x) => ({
     title: x.n,
     meta: <Pill>{x.g}</Pill>,

@@ -112,7 +112,6 @@ export const LEADS_REPORT: ListConfig<LeadRow> = {
   analytics: { title: "Воронка", tab: "Воронка", render: () => <Funnel /> },
   sub: () => "Сколько лидов колл-центра превратились в сделки по каждому менеджеру (r308). Сравнение с прошлым периодом.",
   noCards: true,
-  noDelete: true,
   record: (x) => ({
     title: managerName(x.u),
     meta: <span className="text-[13px]">Лиды → сделки</span>,

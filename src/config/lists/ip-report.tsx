@@ -129,7 +129,6 @@ export const IP_REPORT: ListConfig<IpReportRow> = {
   analytics: { title: "По месяцам", render: ({ r, p }) => <MonthChart title="Заявки на IP по месяцам" series={BY_MONTH} r={r} p={p} /> },
   sub: () => "Март 2018. Сравнение с февралём. Выгружается в Excel по выбранному периоду.",
   noCards: true,
-  noDelete: true,
   record,
   name: (x) => `Филиал ${x.br}`,
 }

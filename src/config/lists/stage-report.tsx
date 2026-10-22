@@ -119,7 +119,6 @@ export const STAGE_REPORT: ListConfig<StageRow> = {
   },
   sub: () => "Отчёт по этапам продаж (r300): где застревают сделки и сколько доходит до договора. Сравнение — с прошлым периодом.",
   noCards: true,
-  noDelete: true,
   record: (x) => ({
     title: `${x.code} · ${x.name}`,
     meta: <span className="text-[13px]">{x.n} сделок на этапе</span>,

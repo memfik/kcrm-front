@@ -198,7 +198,6 @@ export const CALLS: ListConfig<Call> = {
     ]
   },
   sub: () => "Входящие и исходящие звонки по клиентам из телефонии Oktell, с записями разговоров.",
-  noDelete: true,
   record,
   name: (x) => `Звонок ${x.tel}`,
 }

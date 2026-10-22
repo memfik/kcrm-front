@@ -14,8 +14,8 @@ export default function NotFound() {
     <>
       <Header />
       <main className="flex-1 overflow-x-clip pb-16 max-sm:pb-[calc(90px+env(safe-area-inset-bottom,0px))]">
-        <section className="page pt-16 pb-10 text-center max-sm:pt-10">
-          <p className="text-[96px] leading-none font-bold tracking-tight text-[#085eff] tabular-nums max-sm:text-[72px]">404</p>
+        <section className="page rise pt-16 pb-10 text-center max-sm:pt-10">
+          <p className="nf-float text-[96px] leading-none font-bold tracking-tight text-[#085eff] tabular-nums max-sm:text-[72px]">404</p>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight max-sm:text-2xl">Страница не найдена</h1>
           <p className="mx-auto mt-2 max-w-[460px] text-sm text-muted-foreground">
             Адрес набран с ошибкой или раздел перенесён. Вернитесь на главную или выберите раздел ниже.
@@ -27,14 +27,20 @@ export default function NotFound() {
         </section>
 
         <section className="page grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-          {NAV_GROUPS.map((g) => (
-            <LiquidGlass key={g.key} bezel={14} className="block rounded-[22px] px-[22px] py-5 max-sm:px-4 max-sm:py-3.5">
+          {NAV_GROUPS.map((g, i) => (
+            <LiquidGlass
+              key={g.key}
+              bezel={14}
+              className="rise block rounded-[22px] px-[22px] py-5 max-sm:px-4 max-sm:py-3.5"
+              // карточки появляются по очереди, после заголовка
+              style={{ animationDelay: `${150 + i * 70}ms` }}
+            >
               <div className="mb-2.5 text-[11.5px] font-semibold tracking-[1px] text-[var(--faint)] uppercase">{g.title}</div>
               <ul className="flex flex-col gap-0.5">
                 {g.sections.slice(0, 5).map((s) => (
                   <li key={s.slug}>
-                    <Link href={`/${s.slug}`} className="-mx-2 flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-[13.5px] hover:bg-[var(--soft)]">
-                      <s.icon className="size-4 flex-none text-muted-foreground" />
+                    <Link href={`/${s.slug}`} className="group -mx-2 flex items-center gap-2.5 rounded-xl px-2 py-1.5 text-[13.5px] transition-colors hover:bg-[var(--soft)]">
+                      <s.icon className="size-4 flex-none text-muted-foreground transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-[#085eff] motion-reduce:transition-none" />
                       {s.title}
                     </Link>
                   </li>

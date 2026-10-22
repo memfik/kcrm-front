@@ -25,7 +25,7 @@ export default function NotFound() {
           </BtnLink>
         </section>
 
-        <section className="page grid grid-cols-1 gap-3.5 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="page grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {NAV_GROUPS.map((g) => (
             <div key={g.key} className="rounded-[22px] border border-border bg-card px-[22px] py-5 max-sm:px-4 max-sm:py-3.5">
               <div className="mb-2.5 text-[11.5px] font-semibold tracking-[1px] text-[var(--faint)] uppercase">{g.title}</div>

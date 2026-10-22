@@ -3,6 +3,7 @@ import Link from "next/link"
 import { House } from "lucide-react"
 import { Header } from "@/components/layout/header"
 import { BtnLink } from "@/components/list/ui"
+import { LiquidGlass } from "@/components/ui/opaline/liquid-glass"
 import { NAV_GROUPS } from "@/config/nav"
 
 export const metadata: Metadata = { title: "Страница не найдена — kCRM" }
@@ -27,7 +28,7 @@ export default function NotFound() {
 
         <section className="page grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
           {NAV_GROUPS.map((g) => (
-            <div key={g.key} className="rounded-[22px] border border-border bg-card px-[22px] py-5 max-sm:px-4 max-sm:py-3.5">
+            <LiquidGlass key={g.key} bezel={14} className="block rounded-[22px] px-[22px] py-5 max-sm:px-4 max-sm:py-3.5">
               <div className="mb-2.5 text-[11.5px] font-semibold tracking-[1px] text-[var(--faint)] uppercase">{g.title}</div>
               <ul className="flex flex-col gap-0.5">
                 {g.sections.slice(0, 5).map((s) => (
@@ -39,7 +40,7 @@ export default function NotFound() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </LiquidGlass>
           ))}
         </section>
       </main>
